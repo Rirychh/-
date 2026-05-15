@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes Agent — 會自己進化的 AI 助手 + 完整安裝教學｜808 AI 五金行</title>
+<meta name="description" content="Hermes Agent — Nous Research 開源的自我進化 AI Agent。本頁含完整介紹 + 一行指令安裝 + 設定教學 + 與 Claude Code、OpenClaw 並行的實戰指南。808AI 五金行親自實測。">
+
+<link rel="canonical" href="https://808aiworkshop.com/hermes-agent">
+<meta property="og:title" content="Hermes Agent — 會自己進化的 AI 助手 + 完整安裝教學｜808 AI 五金行">
+<meta property="og:description" content="一頁包：Hermes 是什麼、六大核心能力、跟 Claude Code / OpenClaw 比較、一行指令安裝、Telegram gateway 設定。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://808aiworkshop.com/hermes-agent">
+<meta property="og:site_name" content="808 AI 五金行">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  background: #FAF5F0;
+  color: #2D2A26;
+  line-height: 1.75;
+  font-size: 16px;
+}
+
+:root {
+  --primary: #E8751A;
+  --primary-light: #FDF0E6;
+  --primary-border: #F5C89A;
+  --hermes: #7C3AED;
+  --hermes-light: #F3EEFF;
+  --hermes-border: #C4B5FD;
+  --bg: #FAF5F0;
+  --card: #FFFFFF;
+  --text: #2D2A26;
+  --text-2: #6B6560;
+  --text-3: #9B9590;
+  --border: #E8E0D8;
+  --max-w: 880px;
+}
+
+h1, h2, h3 { font-family: 'Noto Serif TC', serif; line-height: 1.3; }
+a { color: var(--hermes); text-decoration: none; transition: all 0.2s; }
+a:hover { text-decoration: underline; }
+code { font-family: 'JetBrains Mono', monospace; background: #F5EDE5; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 72px 24px 56px;
+  position: relative;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 3px; background: var(--hermes); border-radius: 2px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--hermes); color: #fff;
+  font-size: 13px; font-weight: 600; padding: 6px 18px;
+  border-radius: 100px; letter-spacing: 0.5px; margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  font-weight: 700; margin-bottom: 16px;
+}
+.hero h1 .accent { color: var(--hermes); }
+.hero .subtitle {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  color: var(--text-2); max-width: 580px; margin: 0 auto;
+}
+
+/* Section */
+.section { padding: 56px 0; }
+.section-border { border-top: 1px solid var(--border); }
+.section-title { font-size: 1.4rem; margin-bottom: 8px; }
+.section-subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 32px; }
+.section-body p { color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body strong { color: var(--text); }
+.section-body ul, .section-body ol { padding-left: 22px; color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body li { margin-bottom: 6px; }
+
+/* Feature Grid */
+.feature-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+}
+@media (max-width: 680px) { .feature-grid { grid-template-columns: 1fr; } }
+.feature-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 28px 24px; transition: all 0.3s;
+}
+.feature-card:hover {
+  border-color: var(--hermes-border); transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+.feature-icon { font-size: 28px; margin-bottom: 12px; }
+.feature-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.feature-card p { font-size: 14px; color: var(--text-2); }
+
+/* Highlight Box */
+.highlight {
+  background: var(--hermes-light); border: 1.5px solid var(--hermes-border);
+  border-radius: 14px; padding: 24px 28px; margin: 28px 0;
+}
+.highlight h3 { color: var(--hermes); font-size: 1.05rem; margin-bottom: 10px; }
+.highlight p { font-size: 14px; color: var(--text-2); }
+.highlight strong { color: var(--text); }
+
+/* TOC */
+.toc {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px 26px; margin: 32px 0;
+}
+.toc-title { font-size: 13px; color: var(--text-3); font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+.toc ol { padding-left: 20px; margin: 0; color: var(--text-2); }
+.toc li { font-size: 14px; margin-bottom: 6px; }
+.toc a { color: var(--text); }
+.toc a:hover { color: var(--hermes); }
+
+/* Install Box */
+.install-box {
+  background: #1e1e2e; border-radius: 12px; padding: 22px 26px;
+  margin: 20px 0; position: relative;
+}
+.install-box code {
+  font-family: 'JetBrains Mono', monospace; color: #a6e3a1;
+  font-size: 13.5px; background: none; padding: 0;
+  display: block; white-space: pre-wrap; word-break: break-all;
+}
+.install-label {
+  font-size: 12px; color: #6c7086; margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Steps */
+.steps { counter-reset: step; margin: 24px 0; }
+.step {
+  counter-increment: step;
+  padding: 20px 20px 20px 64px; position: relative;
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 12px; margin-bottom: 14px;
+}
+.step::before {
+  content: counter(step);
+  position: absolute; left: 20px; top: 20px;
+  width: 32px; height: 32px; background: var(--hermes-light);
+  color: var(--hermes); font-weight: 800; font-size: 15px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; font-family: 'Noto Sans TC', sans-serif; }
+.step p { font-size: 14px; color: var(--text-2); margin-bottom: 6px; }
+.step code { font-size: 13px; }
+
+/* Tip */
+.tip { background: var(--primary-light); border: 1px solid var(--primary-border); border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+.tip-title { font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.tip p { color: var(--text-2); font-size: 14px; }
+.tip strong { color: var(--text); }
+
+/* Warn */
+.warn { background: #FFF5E0; border: 1px solid #F5D89A; border-radius: 12px; padding: 18px 22px; margin: 20px 0; }
+.warn-title { font-weight: 700; color: #B45309; font-size: 14px; margin-bottom: 6px; }
+.warn p { color: var(--text-2); font-size: 14px; }
+
+/* Cmd Grid */
+.cmd-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 18px 0;
+}
+@media (max-width: 680px) { .cmd-grid { grid-template-columns: 1fr; } }
+.cmd-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+}
+.cmd-card code { font-size: 13px; color: var(--hermes); background: var(--hermes-light); }
+.cmd-card p { font-size: 13.5px; color: var(--text-2); margin-top: 6px; }
+
+/* Compare Table */
+.compare-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--card); border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--border);
+  margin: 18px 0;
+}
+.compare-table th, .compare-table td {
+  padding: 12px 16px; text-align: left; font-size: 13.5px;
+  border-bottom: 1px solid var(--border);
+}
+.compare-table thead th {
+  background: #F5EDE5; font-weight: 700; font-size: 13px;
+}
+.compare-table thead th:nth-child(2) { color: var(--hermes); }
+.compare-table thead th:nth-child(3) { color: #D94F1A; }
+.compare-table thead th:nth-child(4) { color: #D97757; }
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; white-space: nowrap; }
+@media (max-width: 520px) {
+  .compare-table th, .compare-table td { padding: 10px 12px; font-size: 13px; }
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+}
+@media (max-width: 680px) { .features-grid { grid-template-columns: 1fr; } }
+
+/* CTA */
+.cta-section { padding: 56px 24px; text-align: center; border-top: 1px solid var(--border); }
+.cta-section h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.cta-section p { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: var(--hermes); color: #fff; margin: 6px;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,0.25); color: #fff; text-decoration: none; }
+.cta-btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: transparent; color: var(--hermes); border: 2px solid var(--hermes-border); margin: 6px;
+}
+.cta-btn-outline:hover { background: var(--hermes-light); transform: translateY(-2px); text-decoration: none; }
+
+/* Footer */
+.footer { border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; }
+.footer-brand { font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.footer p { font-size: 13px; color: var(--text-3); }
+
+/* Animations */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Nav */
+.nav-808ai {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(10, 22, 40, 0.96);
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  backdrop-filter: blur(10px);
+  overflow-x: auto;
+}
+.nav-808ai::-webkit-scrollbar { height: 0; }
+.nav-808ai a { color: rgba(255,255,255,0.82); text-decoration: none; white-space: nowrap; }
+.nav-808ai a:hover { color: #fff; }
+.nav-808ai-brand { font-weight: 800; color: #fff !important; flex-shrink: 0; }
+.nav-808ai-sep, .nav-808ai-dot { color: rgba(255,255,255,0.32); flex-shrink: 0; }
+.nav-808ai-items { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.nav-808ai-link { padding: 6px 8px; border-radius: 999px; }
+.nav-808ai-link.nav-808ai-active { color: #0a1628 !important; background: #e8d49e; font-weight: 700; }
+@media (max-width: 768px) {
+  .nav-808ai { align-items: flex-start; gap: 8px; padding: 10px 12px; }
+  .nav-808ai-items { gap: 6px; font-size: 13px; }
+  .nav-808ai-link { padding: 5px 7px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav-808ai" aria-label="808AI site navigation">
+  <a href="https://808aiworkshop.com/" class="nav-808ai-brand">🔧 808AI 五金行</a>
+  <span class="nav-808ai-sep">|</span>
+  <div class="nav-808ai-items">
+    <a href="https://808aiworkshop.com/" class="nav-808ai-link">首頁</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/openclawvsclaude" class="nav-808ai-link">工具比較</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiopenclawsetup" class="nav-808ai-link">OpenClaw 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aisecuritychecklist" class="nav-808ai-link">安全檢查</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudesetup" class="nav-808ai-link">Claude 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudecodesetup" class="nav-808ai-link">Claude Code</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiworkflow" class="nav-808ai-link">工作流程</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudefeatures" class="nav-808ai-link">Claude 功能</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiccunpacked" class="nav-808ai-link">深度拆解</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aichatgptimageprompts" class="nav-808ai-link">ChatGPT 圖像提示</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/hermes-agent" class="nav-808ai-link nav-808ai-active">Hermes Agent</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/livestream" class="nav-808ai-link">直播記錄</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">🧠 Nous Research 開源專案 · 一頁完整指南 · v0.13.0</div>
+  <h1><span class="accent">Hermes Agent</span><br>會自己進化的 AI 助手</h1>
+  <p class="subtitle">
+    唯一內建學習迴路的 AI Agent——從經驗中自動建立技能，越用越懂你，越用越聰明。<br>
+    本頁含完整介紹 + 一行 curl 指令安裝 + Telegram gateway 設定 + 808AI 第一手實測。
+  </p>
+</header>
+
+<main class="container">
+
+  <!-- What is it -->
+  <section class="section">
+    <h2 class="section-title">這是什麼？</h2>
+    <p class="section-subtitle">一句話說完：自己會進化的 AI 員工</p>
+    <p style="font-size:15px;color:var(--text-2);margin-bottom:20px;">
+      Hermes Agent 是 Nous Research 推出的開源 AI Agent 框架。跟其他 Agent 最大的差別是：<strong>它會從你的使用經驗中自動學習</strong>。做過一次的任務，下次會自動建立「技能」來處理。不需要你手動教它，它自己會變聰明。
+    </p>
+
+    <div class="highlight">
+      <h3>🔄 自我進化閉環</h3>
+      <p>
+        <strong>做事 → 記住 → 建立技能 → 改善技能 → 更好地做事</strong><br><br>
+        傳統 AI Agent：你教它做 A，它只會做 A。<br>
+        Hermes Agent：你教它做 A，它學會 A，然後自己發現 B 也可以用類似方法，自動建立 B 的技能。
+      </p>
+    </div>
+  </section>
+
+  <!-- Key Features -->
+  <section class="section section-border">
+    <h2 class="section-title">六大核心能力</h2>
+    <p class="section-subtitle">不只是工具，是一個會成長的系統</p>
+
+    <div class="feature-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🧠</div>
+        <h3>自我學習</h3>
+        <p>從經驗中自動建立 Skill，做過的任務下次更快更好。跨對話記住你的偏好和工作模式。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🌐</div>
+        <h3>五平台整合</h3>
+        <p>Telegram、Discord、Slack、WhatsApp、Signal + 終端機。一個 Agent 同時出現在所有平台。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🤖</div>
+        <h3>200+ 模型支援</h3>
+        <p>透過 OpenRouter 接入 200 多個模型。也支援 OpenAI、Anthropic、自架模型。一行指令切換。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">☁️</div>
+        <h3>彈性部署</h3>
+        <p>本地、Docker、SSH、Serverless（Daytona / Modal）都能跑。Serverless 模式閒置不收費。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">⏰</div>
+        <h3>排程自動化</h3>
+        <p>內建 Cron 排程器。報表、備份、巡檢，用自然語言設定，時間到自動跑。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🔧</div>
+        <h3>40+ 工具 + MCP</h3>
+        <p>內建 40 多個工具，支援 MCP 協議擴充。開源 MIT License，社群自由貢獻。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="section section-border">
+    <h2 class="section-title">⚡ 跟其他工具比較</h2>
+    <p class="section-subtitle">Hermes Agent vs OpenClaw vs Claude Code + Telegram</p>
+
+    <table class="compare-table fade-up">
+      <thead>
+        <tr>
+          <th></th>
+          <th>🧠 Hermes Agent</th>
+          <th>🦞 OpenClaw</th>
+          <th>⌨️ Claude Code + Telegram</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>自我學習</td><td>✓ 自動建立 Skill</td><td>△ 需手動設定</td><td>△ MEMORY.md + brain 系統</td></tr>
+        <tr><td>模型支援</td><td>200+（OpenRouter）</td><td>多家</td><td>Anthropic only</td></tr>
+        <tr><td>通訊平台</td><td>5 個（含 WhatsApp）</td><td>4 個（含 LINE）</td><td>✓ Telegram channel（隨時遠端指揮）</td></tr>
+        <tr><td>部署方式</td><td>本地/Docker/Serverless</td><td>本地</td><td>本地 CLI + Telegram relay</td></tr>
+        <tr><td>排程</td><td>✓ 內建 Cron</td><td>✓ Cron + Heartbeat</td><td>✓ Remote Trigger / launchd</td></tr>
+        <tr><td>多 Agent</td><td>單一 Agent（強化型）</td><td>✓ 多 Agent 編排</td><td>✓ Subagents / Skills</td></tr>
+        <tr><td>授權</td><td>MIT（完全開源）</td><td>商業授權</td><td>商業授權</td></tr>
+        <tr><td>學習曲線</td><td>中等</td><td>較陡</td><td>中等（會用 CLI + Telegram 設定）</td></tr>
+        <tr><td>生態成熟度</td><td>新（2026 初）</td><td>成熟</td><td>成熟（官方持續更新）</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align:center;margin-top:14px;font-size:13.5px;color:var(--text-3);">
+      想看更完整比較？<a href="https://808aiworkshop.com/openclawvsclaude" style="color:var(--hermes);">→ 三方比較專頁</a>
+    </p>
+  </section>
+
+  <!-- TOC -->
+  <div class="toc fade-up">
+    <div class="toc-title">📖 完整安裝與設定教學</div>
+    <ol>
+      <li><a href="#prereq">安裝前準備</a>（系統需求 / OpenRouter / Telegram bot）</li>
+      <li><a href="#install">一行指令安裝</a></li>
+      <li><a href="#setup">hermes setup wizard 首次設定</a></li>
+      <li><a href="#model">設定 LLM provider</a></li>
+      <li><a href="#gateway">接上 Telegram gateway</a></li>
+      <li><a href="#run">三種啟動模式</a></li>
+      <li><a href="#parallel">與 Claude Code / OpenClaw 並行</a></li>
+      <li><a href="#troubleshoot">常見問題 / 故障排除</a></li>
+      <li><a href="#tony">Tony 第一手實測（2026/05/09）</a></li>
+      <li><a href="#v0130">v0.13.0 — 2026/05 新功能</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. Prereq -->
+  <section class="section section-border section-body" id="prereq">
+    <h2 class="section-title">1. 安裝前準備</h2>
+    <p class="section-subtitle">三樣東西，五分鐘可備齊</p>
+
+    <h3 style="font-size:1.05rem;margin:18px 0 8px;">作業系統與硬體</h3>
+    <ul>
+      <li><strong>macOS</strong>（Intel 或 Apple Silicon 都可）或 <strong>Linux</strong>（Ubuntu / Debian 主流發行版）</li>
+      <li>記憶體 8 GB 起跳；想跑語音模式或本地模型建議 16 GB+</li>
+      <li>儲存空間 約 2-3 GB（含 91 個 bundled skills 與快取目錄）</li>
+      <li>網路：需要連 GitHub、OpenRouter / OpenAI、Telegram API</li>
+    </ul>
+    <p>安裝腳本會自動處理 <code>uv</code>、Python 3.11、Node.js、ripgrep、ffmpeg 等依賴——不需要你預先裝。</p>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">LLM provider key（擇一）</h3>
+    <ul>
+      <li><strong>OpenRouter</strong>（推薦）：<a href="https://openrouter.ai/" target="_blank" rel="noopener">openrouter.ai</a> 註冊 → 開一支 API key → 一個 key 通 200+ 家模型</li>
+      <li><strong>OpenAI</strong>：<a href="https://platform.openai.com/" target="_blank" rel="noopener">platform.openai.com</a> 申請 API key</li>
+      <li><strong>Anthropic</strong>：<a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> 申請 API key</li>
+      <li>都可以混用（Hermes 支援多 provider 並存，按任務切換）</li>
+    </ul>
+    <div class="tip">
+      <div class="tip-title">💡 808AI 建議</div>
+      <p>第一次裝直接用 OpenRouter——免綁定特定家、可以試免費模型（如 Llama 3.3、Gemini Flash）跑通流程，確定要長期用再考慮直接綁 Anthropic / OpenAI。</p>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">Telegram bot token（選配但強推）</h3>
+    <ol>
+      <li>用 Telegram 搜尋 <code>@BotFather</code>，點 Start</li>
+      <li>傳 <code>/newbot</code>，依提示輸入 bot 名稱與 username（必須以 <code>bot</code> 結尾，例如 <code>my_hermes_bot</code>）</li>
+      <li>BotFather 回你一串 token，類似 <code>1234567890:ABCdefGHIjklMNO...</code>——複製保存</li>
+      <li>傳 <code>/setprivacy</code> → 選你的 bot → 選 <code>Disable</code></li>
+    </ol>
+    <p>不接 Telegram 也能用，但接上後就能用手機在任何地方下指令——這是 Hermes 跟 ChatGPT App 最大差異。</p>
+  </section>
+
+  <!-- 2. Install -->
+  <section class="section section-border section-body" id="install">
+    <h2 class="section-title">2. 一行指令安裝</h2>
+    <p class="section-subtitle">官方 install.sh — 5 分鐘自動跑完</p>
+
+    <div class="install-box">
+      <div class="install-label"># macOS / Linux 通用</div>
+      <code>curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</code>
+    </div>
+
+    <p>這條指令會做這些事：</p>
+    <ol>
+      <li>檢查並安裝 <code>uv</code>（Python 套件管理器）</li>
+      <li>下載 Hermes Agent 源碼到 <code>~/.hermes/hermes-agent/</code></li>
+      <li>建立 Python 3.11 虛擬環境 + 安裝 ~80 個 Python 依賴</li>
+      <li>安裝系統工具：Node.js、ripgrep、ffmpeg（如果還沒裝）</li>
+      <li>下載並掛載 <strong>91 個 bundled skills</strong></li>
+      <li>建立空 <code>config.yaml</code>、cron 目錄、logs 目錄</li>
+      <li>把 <code>hermes</code> 指令加到 <code>~/.local/bin/</code></li>
+    </ol>
+
+    <div class="highlight">
+      <h3>📍 安裝後的目錄結構</h3>
+      <p>所有東西都在 <code>~/.hermes/</code>，跟你既有的 Claude Code（<code>~/.claude/</code>）或 OpenClaw（<code>~/.openclaw/</code>）<strong>完全隔離</strong>——可以放心並行安裝。</p>
+      <pre style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-2);line-height:1.7;">~/.hermes/
+├── hermes-agent/      # 源碼
+├── config.yaml        # 設定檔
+├── audio_cache/       # 語音模式快取
+├── image_cache/       # 圖像快取
+├── cron/              # 排程 job 設定
+├── hooks/             # 觸發事件腳本
+└── logs/              # 執行紀錄</pre>
+    </div>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 安裝可能卡住的點</div>
+      <p>
+        <strong>Python 版本</strong>：若你 macOS 系統 Python 不是 3.11，<code>uv</code> 會自動下載；無需手動切換。<br>
+        <strong>網路</strong>：GitHub raw 內容若被擋，先用 VPN 或改下載 release ZIP 解壓再跑 <code>install.sh</code>。<br>
+        <strong>權限</strong>：腳本只寫到你的家目錄；不需要 sudo。
+      </p>
+    </div>
+  </section>
+
+  <!-- 3. Setup wizard -->
+  <section class="section section-border section-body" id="setup">
+    <h2 class="section-title">3. hermes setup wizard 首次設定</h2>
+    <p class="section-subtitle">互動式精靈，3 個問題搞定</p>
+
+    <div class="install-box">
+      <div class="install-label"># 安裝完直接跑這條</div>
+      <code>hermes setup</code>
+    </div>
+
+    <p>Wizard 會問你三組問題：</p>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <h4>選擇 LLM provider</h4>
+        <p>列表會列出已偵測到的 provider（OpenRouter / OpenAI / Anthropic / 本地 Ollama）。選一個你準備好 key 的——OpenRouter 是 808AI 建議的第一選擇。</p>
+      </div>
+      <div class="step fade-up">
+        <h4>貼上 API key</h4>
+        <p>把上一步準備好的 key 貼進去；wizard 會直接寫進 <code>~/.hermes/config.yaml</code> 並加密儲存。<strong>不需要手動編輯 config 檔。</strong></p>
+      </div>
+      <div class="step fade-up">
+        <h4>選預設模型</h4>
+        <p>從 provider 的 model list 挑一個當預設。不確定就選列表第一個——之後可以用 <code>hermes model</code> 隨時切換。</p>
+      </div>
+    </div>
+
+    <p>結束後 wizard 會跑一次自我測試，看到 <code>✓ Setup complete</code> 就代表 OK。</p>
+  </section>
+
+  <!-- 4. Model -->
+  <section class="section section-border section-body" id="model">
+    <h2 class="section-title">4. 設定 LLM provider 細節</h2>
+    <p class="section-subtitle">隨時換模型、加 provider、調參數</p>
+
+    <h3 style="font-size:1.05rem;margin:14px 0 8px;">常用 model 指令</h3>
+    <div class="cmd-grid">
+      <div class="cmd-card">
+        <code>hermes model</code>
+        <p>列出所有可用模型 + 標記目前預設</p>
+      </div>
+      <div class="cmd-card">
+        <code>hermes model use &lt;name&gt;</code>
+        <p>切換預設模型，如 <code>hermes model use anthropic/claude-3.5-sonnet</code></p>
+      </div>
+      <div class="cmd-card">
+        <code>hermes model add &lt;provider&gt;</code>
+        <p>新增 provider</p>
+      </div>
+      <div class="cmd-card">
+        <code>hermes model test</code>
+        <p>呼叫一次目前 model 測試 key + 計費路徑</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">model picking 三條原則</h3>
+    <ol>
+      <li><strong>日常 chat / brainstorm</strong>：用便宜快的（GPT-4o-mini、Claude Haiku、Gemini Flash）</li>
+      <li><strong>重要決策 / 長文寫作</strong>：用最頂的（Claude Opus 4.7、GPT-5、Gemini 2.5 Pro）</li>
+      <li><strong>大量資料 / 長 context</strong>：選 1M context 的（Gemini 2.5 Pro、Claude 1M context）</li>
+    </ol>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">/think 與 /fast 動態切換</h3>
+    <p>v0.13.0 新增：在聊天中直接打 <code>/think default</code> 切到「深度思考」模式，<code>/fast default</code> 切回「快速回應」——不必離開 session 重設模型。</p>
+  </section>
+
+  <!-- 5. Gateway -->
+  <section class="section section-border section-body" id="gateway">
+    <h2 class="section-title">5. 接上 Telegram gateway</h2>
+    <p class="section-subtitle">手機在任何地方都能跟 Hermes 對話</p>
+
+    <div class="install-box">
+      <div class="install-label"># 進 gateway 設定</div>
+      <code>hermes gateway add telegram</code>
+    </div>
+
+    <p>會跳出兩個問題：</p>
+    <ol>
+      <li><strong>Bot token</strong>：貼上從 <code>@BotFather</code> 拿到的 token</li>
+      <li><strong>允許的 chat_id</strong>：你自己的 Telegram user ID。<strong>強烈建議只開白名單給自己</strong>，避免被路人騷擾。</li>
+    </ol>
+
+    <p>設定完跑：</p>
+
+    <div class="install-box">
+      <div class="install-label"># 啟動 gateway daemon</div>
+      <code>hermes gateway</code>
+    </div>
+
+    <p>看到 <code>Listening for messages...</code> 就成功——打開你 Telegram bot 對話視窗，傳一句「Hi」，Hermes 應該幾秒內回覆。</p>
+
+    <div class="highlight">
+      <h3>🌐 17 個 Messaging Gateway 一覽</h3>
+      <p>Hermes v0.13.0 支援以下平台（替換 <code>telegram</code> 即可）：</p>
+      <p style="margin-top:8px;">
+        Telegram · Discord · Slack · WhatsApp · Signal · Email · SMS · iMessage · 飛書 Lark · 釘釘 DingTalk · WeCom 企業微信 · WeChat · Microsoft Teams · Matrix · Mattermost · Twilio Voice · Google Meet（Twilio 橋接）
+      </p>
+    </div>
+  </section>
+
+  <!-- 6. Run -->
+  <section class="section section-border section-body" id="run">
+    <h2 class="section-title">6. 三種啟動模式</h2>
+    <p class="section-subtitle">挑一個，或一起跑</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>模式</th><th>指令</th><th>用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>互動 TUI</td><td><code>hermes</code></td><td>終端機直接對話，適合 debug / 嘗試新 skill / 寫長文</td></tr>
+        <tr><td>Gateway daemon</td><td><code>hermes gateway</code></td><td>背景跑，接 Telegram / Discord / Slack 訊息——手機指揮主力</td></tr>
+        <tr><td>Cron 排程</td><td><code>hermes cron list</code></td><td>定期觸發任務（每日簡報、週報、巡檢），不需互動</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">背景常駐：launchd（macOS） / systemd（Linux）</h3>
+    <p>如果你要 Hermes 24/7 在 Mac mini 上跑，建議把 gateway 包成 launchd / systemd service：</p>
+
+    <div class="install-box">
+      <div class="install-label"># macOS — Hermes 內建幫你產生 plist</div>
+      <code>hermes service install --launchd</code>
+    </div>
+
+    <p>跑完會在 <code>~/Library/LaunchAgents/</code> 產生 plist 並自動 load。要停掉用 <code>hermes service uninstall</code>。</p>
+  </section>
+
+  <!-- 7. Parallel -->
+  <section class="section section-border section-body" id="parallel">
+    <h2 class="section-title">7. 與 Claude Code / OpenClaw 並行</h2>
+    <p class="section-subtitle">三套完全可以共存，獨立 bot、獨立 process</p>
+
+    <p>Hermes 安裝在 <code>~/.hermes/</code>，跟下面兩套<strong>完全隔離</strong>：</p>
+    <ul>
+      <li>Claude Code → <code>~/.claude/</code></li>
+      <li>OpenClaw → <code>~/.openclaw/</code></li>
+    </ul>
+
+    <p>共用的只有：</p>
+    <ul>
+      <li><strong>系統二進制</strong>：uv / Python / Node.js / ffmpeg / ripgrep（一份就夠）</li>
+      <li><strong>API keys</strong>（選用）：OpenRouter / OpenAI key 可以三套共享，省管理成本</li>
+    </ul>
+
+    <div class="tip">
+      <div class="tip-title">💡 808AI Tony 親身組合建議</div>
+      <p>
+        <strong>戰略 + 寫 code</strong> → Claude Code（最穩，Subagents 拆任務最順）<br>
+        <strong>自動化 daemon / cron</strong> → OpenClaw（多 agent 編排是強項）<br>
+        <strong>想試語音 / Honcho 用戶建模 / 自我建立 Skill</strong> → Hermes<br>
+        三個獨立 Telegram bot，手機收到不同訊息對應到不同 agent，分工清楚。
+      </p>
+    </div>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 一個 Telegram polling 衝突陷阱</div>
+      <p>同一個 Telegram bot token <strong>不能</strong>同時被兩個 process polling——會互踢。每套必須用<strong>不同的 bot token</strong>。BotFather 開新 bot 完全免費。</p>
+    </div>
+  </section>
+
+  <!-- 8. Troubleshoot -->
+  <section class="section section-border section-body" id="troubleshoot">
+    <h2 class="section-title">8. 常見問題 / 故障排除</h2>
+
+    <h3 style="font-size:1.05rem;margin:14px 0 8px;">安裝後找不到 hermes 指令</h3>
+    <p>把 <code>~/.local/bin</code> 加到 <code>$PATH</code>：</p>
+    <div class="install-box">
+      <code># Bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc &amp;&amp; source ~/.bashrc
+
+# Zsh（macOS 預設）
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc &amp;&amp; source ~/.zshrc</code>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">API key 一直被拒</h3>
+    <ul>
+      <li>檢查 key 開頭有沒有多餘空白：跑 <code>hermes model test</code> 看 error</li>
+      <li>OpenRouter key 必須以 <code>sk-or-</code> 開頭；OpenAI 是 <code>sk-</code>；Anthropic 是 <code>sk-ant-</code></li>
+      <li>OpenRouter 帳號要先充值 $5 美金以上才能用付費模型；免費模型仍可用</li>
+    </ul>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">Telegram bot 沒反應</h3>
+    <ul>
+      <li>確認 <code>hermes gateway</code> 還在跑（看終端機有沒有 <code>Listening for messages...</code>）</li>
+      <li>有沒有把這個 bot token 同時給別人 / 別的 process 用</li>
+      <li>確認你的 chat_id 已加入白名單（<code>hermes gateway allowlist</code>）</li>
+    </ul>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">想完整移除</h3>
+    <div class="install-box">
+      <div class="install-label"># 1. 停掉 service（若有裝）</div>
+      <code>hermes service uninstall</code>
+    </div>
+    <div class="install-box">
+      <div class="install-label"># 2. 刪掉整個目錄</div>
+      <code>trash ~/.hermes</code>
+    </div>
+    <p>建議用 <code>trash</code> 不是 <code>rm -rf</code>——萬一誤刪可從 macOS Trash 救回。</p>
+  </section>
+
+  <!-- 9. Tony 第一手 -->
+  <section class="section section-border section-body" id="tony">
+    <h2 class="section-title">9. Tony 第一手實測</h2>
+    <p class="section-subtitle">2026/05/09 在 Mac mini M4 32GB 上跑通的紀錄</p>
+
+    <div class="highlight">
+      <h3>🧪 5 分鐘從 0 到第一條訊息</h3>
+      <p>
+        <strong>安裝</strong>：一條 curl 命令搞定，~5 分鐘安裝完，自動處理 uv / Python 3.11 / Node.js / ripgrep / ffmpeg / 91 個 bundled skills。<br><br>
+        <strong>位置</strong>：所有東西都在 <code>~/.hermes/</code>，完全隔離不影響既有 Claude Code 或 OpenClaw。<br><br>
+        <strong>啟動成本</strong>：只需一個 LLM provider key（OpenRouter 一個 key 通 200+ models 最方便）+ 獨立 Telegram bot token。<br><br>
+        <strong>跑起來</strong>：<code>hermes</code>（互動 TUI）/ <code>hermes setup</code>（初次設定 wizard）/ <code>hermes gateway</code>（啟 messaging gateway）。
+      </p>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">實戰用法定位</h3>
+    <ul>
+      <li>跟 Claude Code、OpenClaw 三套<strong>完全可以並行</strong>——各自獨立 bot、獨立 process、共享 OpenAI / OpenRouter key</li>
+      <li>Hermes 的 Active Memory + 自動 Skill 建立是<strong>真亮點</strong>，跟主 agent 互補（不是取代）</li>
+      <li>適合當<strong>「第二意見」reviewer</strong>——主 agent 寫東西，丟給 Hermes review，會抓到不同視角</li>
+      <li>對「想試 Claude 以外模型」的人——OpenRouter 一個 key 通 200+ 家，瞬間打開模型選擇</li>
+    </ul>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">適不適合你？</h3>
+    <table class="compare-table">
+      <thead>
+        <tr><th></th><th>適合</th><th>先不要</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>新手</td><td>有 CLI 基礎、敢自己 debug 的人</td><td>完全沒摸過終端機——先從 Claude Code + Telegram 入門</td></tr>
+        <tr><td>已有 AI 工具</td><td>想加「第二意見」reviewer / 試新模型</td><td>主 agent 還沒用熟——先深耕一個</td></tr>
+        <tr><td>使用場景</td><td>單一強化 agent / 語音 / 多 messaging 平台</td><td>需要多 agent 編排（用 OpenClaw 更直接）</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 10. v0.13.0 -->
+  <section class="section section-border section-body" id="v0130">
+    <h2 class="section-title">10. v0.13.0 — 2026/05 新功能總覽</h2>
+    <p class="section-subtitle">過去 1 個月 Hermes 重點往「語音 + realtime + 多平台」方向走</p>
+
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <span class="feature-icon">🎙️</span>
+        <h3>Discord 語音 STT/TTS</h3>
+        <p>Discord voice channels 支援 realtime 語音轉文字 + 文字轉語音 + agent-proxy 模式。直接用語音跟 Hermes 對話，不必打字。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <span class="feature-icon">📞</span>
+        <h3>Google Meet 語音橋</h3>
+        <p>Google Meet + Twilio dial-in 整合 Gemini realtime 語音 bridge。會議中讓 Hermes 即時筆記、回答問題。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <span class="feature-icon">🧠</span>
+        <h3>Active Memory 自訂工具名</h3>
+        <p>Active Memory plugin 支援 concrete tool names — 自動觸發更精準，不會誤抓不相關的記憶。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <span class="feature-icon">⚙️</span>
+        <h3>Chat overrides</h3>
+        <p>新增 <code>/think default</code> + <code>/fast default</code> 在聊天中即時切換思考深度，不需重啟 session。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <span class="feature-icon">📱</span>
+        <h3>iOS 配對 setup codes</h3>
+        <p>iOS app 支援 setup codes 連到私人 LAN gateway。在家用 Mac mini 跑 Hermes，手機可直接配對。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <span class="feature-icon">💬</span>
+        <h3>17 個 Messaging Gateway</h3>
+        <p>Telegram / Discord / Slack / WhatsApp / Signal / Email / SMS / 飛書 / 釘釘 / WeCom / WeChat / iMessage 等全平台覆蓋。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>準備好了嗎？</h2>
+  <p>三個方向，任你挑</p>
+  <div>
+    <a class="cta-btn" href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">
+      🧠 前往 GitHub 倉庫
+    </a>
+    <a class="cta-btn-outline" href="https://808aiworkshop.com/openclawvsclaude">
+      ⚡ 三方比較
+    </a>
+    <a class="cta-btn-outline" href="https://808aiworkshop.com/808aiclaudecodesetup">
+      ⌨️ Claude Code 教學
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-brand">🔧 808 AI 五金行</div>
+  <p>賣的不是焦慮，是「親自驗證過的 AI 工具與方法」</p>
+  <p style="margin-top: 6px;">All Rights Reserved © 2026</p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
