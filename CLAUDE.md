@@ -1,67 +1,89 @@
-# CLAUDE.md
+# 第二大腦 — 核心索引
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+> 這份文件是 Claude 的工作背景設定，讓 AI 在每次對話中都能快速理解我是誰、在做什麼、我要怎麼被對待。
 
-## 這個 Repo 是什麼
+---
 
-808 AI 五金行（808aiworkshop.com）的靜態網站頁面。目前包含 Hermes Agent 完整介紹與安裝教學頁（`index.html`），純 HTML + CSS + 少量 Vanilla JS，無框架、無建置工具、無依賴套件。
+## 身份與角色
 
-## 開發與預覽
+- **職稱**：建築設計師
+- **公司**：九典聯合建築師事務所
+- **案件類型**：公共工程、辦公大樓（無特定專屬類型）
 
-直接用瀏覽器開啟 `index.html` 即可預覽，或用任意靜態伺服器：
+---
 
-```bash
-# Python（最常見）
-python3 -m http.server 8080
+## 現行專案
 
-# Node.js（若有 npx）
-npx serve .
-```
+| 案名 | 階段 | 性質 |
+|------|------|------|
+| 華光 | 細設三階 | 統包工程 |
 
-沒有 build step，沒有 lint 設定，沒有測試框架。
+- 案名完整清單：參考 [專案試算表](https://docs.google.com/spreadsheets/d/1RNwjIj_l1UfvdaB-EBwa317AkHDgLbo7ipe5gUVbA4o/edit?gid=0#gid=0)
 
-## 頁面架構（index.html）
+---
 
-單一 HTML 檔案，CSS 全部 inline 在 `<style>` 內，結構如下：
+## 今年工作目標
 
-- **Nav**（`.nav-808ai`）：sticky 頂部導覽，連結至 808aiworkshop.com 各子頁
-- **Hero**（`.hero`）：標題 + badge + subtitle
-- **Main container**（`.container`，max-width 880px）：依序放 10 個 section
-- **CTA section**：三個 call-to-action 按鈕
-- **Footer**
+- [ ] 各軟體與 Google Sheet 串接 Revit（自動化資料流）
+- [ ] 導入 AI 即時渲染插件至設計流程
 
-### CSS 設計語言
+---
 
-CSS 變數定義在 `:root`，主要色系：
+## 知識管理現況
 
-| 變數 | 用途 |
-|------|------|
-| `--hermes: #7C3AED` | 主題紫色（按鈕、強調、連結） |
-| `--primary: #E8751A` | 808AI 品牌橘色（tip box） |
-| `--bg: #FAF5F0` | 頁面背景 |
-| `--card: #FFFFFF` | 卡片背景 |
+### 資料放在哪
+- **專案管理 & 進度**：Google Workspace（Sheets / Drive）
+- **設計作業**：本地端 + Revit
+- **協同合作**：事務所內部 Server
 
-### 元件類別
+### 痛點
+- **決策記錄**：找不到當初為何做某個決定
+- **待修正項目追蹤**：散落各處，難以統一管理
 
-- `.feature-card` / `.feature-grid`：兩欄 grid 卡片
-- `.install-box`：深色代碼區塊（`#1e1e2e` 背景，綠色文字 `#a6e3a1`）
-- `.compare-table`：比較用表格
-- `.highlight`：紫色提示框（`--hermes-light` 背景）
-- `.tip`：橘色小提示（`--primary-light` 背景）
-- `.warn`：黃色警告框
-- `.steps` + `.step`：CSS counter 自動編號步驟
+---
 
-### 動畫
+## 溝通偏好
 
-用 `IntersectionObserver` 觸發 `.fade-up` → `.fade-up.visible`，threshold 0.15。
+- 回答**簡短精準**，不要冗言贅字
+- **不隨便附和**，每句話要有邏輯依據
+- 不清楚如何調整時，**先詢問**，不要自行猜測
+- 詢問完後，**確認理解是否正確**再執行
+- 大幅修改前須先說明意圖
 
-## 新增頁面時的慣例
+---
 
-新頁面應維持相同設計系統：
-1. 複製現有 `index.html` 的 `<head>`、nav、footer、CSS 變數區段
-2. 在 `.nav-808ai-items` 加入對應連結，並在當前頁加上 `nav-808ai-active` class
-3. 字型來源：Google Fonts（Noto Sans TC、Noto Serif TC、Inter、JetBrains Mono）
+## 常用工具與技術背景
 
-## 部署
+| 工具 | 用途 | 熟練度 |
+|------|------|--------|
+| Revit | 設計主力 | 主力使用 |
+| PyRevit | Revit 腳本擴充 | AI 輔助產生腳本 |
+| Google Workspace | 專案管理、進度追蹤 | 日常使用 |
+| Server | 團隊協同作業 | 日常使用 |
 
-靜態頁面，可直接部署到 GitHub Pages（從 `main` 或指定分支的根目錄）或任何靜態托管服務。
+- Python 腳本主要依賴 AI 產生，不從頭手寫
+
+---
+
+## 溝通管道
+
+- **內部**：Slack
+- **業主 / 廠商**：LINE 或 Exchange（Outlook）
+
+---
+
+## 潛規則
+
+> 待補充
+
+- [ ] 公司內部慣例與文化
+- [ ] 業主 / 廠商眉角
+- [ ] 術語縮寫清單
+- [ ] 不能踩的雷
+
+---
+
+## 相關連結
+
+- [[華光]] — 現行主案
+- 專案案名索引：[Google Sheet](https://docs.google.com/spreadsheets/d/1RNwjIj_l1UfvdaB-EBwa317AkHDgLbo7ipe5gUVbA4o/edit?gid=0#gid=0)
