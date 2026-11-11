@@ -332,6 +332,25 @@ function Remove-ClaudeProfile {
     Write-Ok "已刪除「$name」。"
 }
 
+function Uninstall-ClaudeMulti {
+    Write-Warn2 '這會移除這個工具、所有額外帳號的本機資料和捷徑。'
+    Write-Warn2 '你原本的 Claude 桌面版和雲端上的對話都不受影響。'
+    if ((Read-Host '確定移除請輸入 YES').Trim() -ne 'YES') { Write-Host '已取消。'; return $false }
+    Restore-Protocol
+    $desktop  = [Environment]::GetFolderPath('Desktop')
+    $programs = [Environment]::GetFolderPath('Programs')
+    $names = @('Claude 多帳號工具.lnk') + @(Get-Profiles | ForEach-Object { "Claude - $($_.Name).lnk" })
+    foreach ($dir in @($desktop, $programs)) {
+        foreach ($n in $names) {
+            $f = Join-Path $dir $n
+            if (Test-Path $f) { Remove-Item -Path $f -Force }
+        }
+    }
+    Remove-Item -Path $Root -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Ok '已完全移除。'
+    return $true
+}
+
 function Show-Menu {
     while ($true) {
         Write-Host ''
@@ -344,6 +363,7 @@ function Show-Menu {
         Write-Host '  4. 建立桌面捷徑'
         Write-Host '  5. 列出所有帳號'
         Write-Host '  6. 刪除帳號'
+        Write-Host '  7. 解除安裝這個工具'
         Write-Host '  0. 離開'
         $c = (Read-Host '請選擇').Trim()
         try {
@@ -354,8 +374,9 @@ function Show-Menu {
                 '4' { $n = Read-ProfileName '要建立捷徑的帳號代號'; if ($n) { New-ProfileShortcut $n } }
                 '5' { Show-Profiles }
                 '6' { Remove-ClaudeProfile }
+                '7' { if (Uninstall-ClaudeMulti) { Read-Host '按 Enter 結束' | Out-Null; return } }
                 '0' { return }
-                default { Write-Err '請輸入 0 到 6。' }
+                default { Write-Err '請輸入 0 到 7。' }
             }
         } catch {
             Write-Err "發生錯誤：$($_.Exception.Message)"
