@@ -23,7 +23,7 @@ $tmp = "$Target.download"
 Invoke-WebRequest -Uri "$BaseUrl/ClaudeMulti.ps1" -OutFile $tmp -UseBasicParsing
 if ((Get-Item $tmp).Length -lt 1000) { Remove-Item $tmp -Force; throw '下載的檔案不完整，請稍後再試。' }
 Move-Item -Path $tmp -Destination $Target -Force
-Unblock-File -Path $Target -ErrorAction SilentlyContinue
+try { Unblock-File -Path $Target } catch { }
 Write-Host '  [1/3] 已下載主程式' -ForegroundColor Green
 
 # 2. 建立「Claude 多帳號工具」捷徑（桌面 + 開始功能表）
