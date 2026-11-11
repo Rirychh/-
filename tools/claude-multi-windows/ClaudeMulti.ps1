@@ -341,6 +341,7 @@ function Uninstall-ClaudeMulti {
     $programs = [Environment]::GetFolderPath('Programs')
     $names = @('Claude 多帳號工具.lnk') + @(Get-Profiles | ForEach-Object { "Claude - $($_.Name).lnk" })
     foreach ($dir in @($desktop, $programs)) {
+        if (-not $dir -or -not (Test-Path $dir)) { continue }
         foreach ($n in $names) {
             $f = Join-Path $dir $n
             if (Test-Path $f) { Remove-Item -Path $f -Force }

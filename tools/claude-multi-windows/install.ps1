@@ -36,6 +36,7 @@ $places = @(
     [Environment]::GetFolderPath('Programs')
 )
 foreach ($dir in $places) {
+    if (-not $dir -or -not (Test-Path $dir)) { continue }
     $lnk = $ws.CreateShortcut((Join-Path $dir 'Claude 多帳號工具.lnk'))
     $lnk.TargetPath  = $ps
     $lnk.Arguments   = $lnkArgs
