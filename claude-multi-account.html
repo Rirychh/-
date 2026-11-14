@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude 多帳號教學 — Windows 一台電腦同時登入兩個帳號｜808 AI 五金行</title>
+<meta name="description" content="免費 Windows 工具，一行指令安裝，讓 Claude 桌面版同時登入公司帳號和個人帳號。含安裝步驟、新增帳號教學、Microsoft Store 版設定、常見問題。808AI 五金行實測。">
+
+<link rel="canonical" href="https://808aiworkshop.com/claude-multi-account">
+<meta property="og:title" content="Claude 多帳號教學 — Windows 一台電腦同時登入兩個帳號｜808 AI 五金行">
+<meta property="og:description" content="一行指令安裝，Claude 桌面版同時開兩個帳號：安裝、新增帳號、每天怎麼用、常見問題。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://808aiworkshop.com/claude-multi-account">
+<meta property="og:site_name" content="808 AI 五金行">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  background: #FAF5F0;
+  color: #2D2A26;
+  line-height: 1.75;
+  font-size: 16px;
+}
+
+:root {
+  --primary: #E8751A;
+  --primary-light: #FDF0E6;
+  --primary-border: #F5C89A;
+  --hermes: #7C3AED;
+  --hermes-light: #F3EEFF;
+  --hermes-border: #C4B5FD;
+  --bg: #FAF5F0;
+  --card: #FFFFFF;
+  --text: #2D2A26;
+  --text-2: #6B6560;
+  --text-3: #9B9590;
+  --border: #E8E0D8;
+  --max-w: 880px;
+}
+
+h1, h2, h3 { font-family: 'Noto Serif TC', serif; line-height: 1.3; }
+a { color: var(--hermes); text-decoration: none; transition: all 0.2s; }
+a:hover { text-decoration: underline; }
+code { font-family: 'JetBrains Mono', monospace; background: #F5EDE5; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 72px 24px 56px;
+  position: relative;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 3px; background: var(--hermes); border-radius: 2px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--hermes); color: #fff;
+  font-size: 13px; font-weight: 600; padding: 6px 18px;
+  border-radius: 100px; letter-spacing: 0.5px; margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  font-weight: 700; margin-bottom: 16px;
+}
+.hero h1 .accent { color: var(--hermes); }
+.hero .subtitle {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  color: var(--text-2); max-width: 580px; margin: 0 auto;
+}
+
+/* Section */
+.section { padding: 56px 0; }
+.section-border { border-top: 1px solid var(--border); }
+.section-title { font-size: 1.4rem; margin-bottom: 8px; }
+.section-subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 32px; }
+.section-body p { color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body strong { color: var(--text); }
+.section-body ul, .section-body ol { padding-left: 22px; color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body li { margin-bottom: 6px; }
+
+/* Feature Grid */
+.feature-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+}
+@media (max-width: 680px) { .feature-grid { grid-template-columns: 1fr; } }
+.feature-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 28px 24px; transition: all 0.3s;
+}
+.feature-card:hover {
+  border-color: var(--hermes-border); transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+.feature-icon { font-size: 28px; margin-bottom: 12px; }
+.feature-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.feature-card p { font-size: 14px; color: var(--text-2); }
+
+/* Highlight Box */
+.highlight {
+  background: var(--hermes-light); border: 1.5px solid var(--hermes-border);
+  border-radius: 14px; padding: 24px 28px; margin: 28px 0;
+}
+.highlight h3 { color: var(--hermes); font-size: 1.05rem; margin-bottom: 10px; }
+.highlight p { font-size: 14px; color: var(--text-2); }
+.highlight strong { color: var(--text); }
+
+/* TOC */
+.toc {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px 26px; margin: 32px 0;
+}
+.toc-title { font-size: 13px; color: var(--text-3); font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+.toc ol { padding-left: 20px; margin: 0; color: var(--text-2); }
+.toc li { font-size: 14px; margin-bottom: 6px; }
+.toc a { color: var(--text); }
+.toc a:hover { color: var(--hermes); }
+
+/* Install Box */
+.install-box {
+  background: #1e1e2e; border-radius: 12px; padding: 22px 26px;
+  margin: 20px 0; position: relative;
+}
+.install-box code {
+  font-family: 'JetBrains Mono', monospace; color: #a6e3a1;
+  font-size: 13.5px; background: none; padding: 0;
+  display: block; white-space: pre-wrap; word-break: break-all;
+}
+.install-label {
+  font-size: 12px; color: #6c7086; margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Steps */
+.steps { counter-reset: step; margin: 24px 0; }
+.step {
+  counter-increment: step;
+  padding: 20px 20px 20px 64px; position: relative;
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 12px; margin-bottom: 14px;
+}
+.step::before {
+  content: counter(step);
+  position: absolute; left: 20px; top: 20px;
+  width: 32px; height: 32px; background: var(--hermes-light);
+  color: var(--hermes); font-weight: 800; font-size: 15px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; font-family: 'Noto Sans TC', sans-serif; }
+.step p { font-size: 14px; color: var(--text-2); margin-bottom: 6px; }
+.step code { font-size: 13px; }
+
+/* Tip */
+.tip { background: var(--primary-light); border: 1px solid var(--primary-border); border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+.tip-title { font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.tip p { color: var(--text-2); font-size: 14px; }
+.tip strong { color: var(--text); }
+
+/* Warn */
+.warn { background: #FFF5E0; border: 1px solid #F5D89A; border-radius: 12px; padding: 18px 22px; margin: 20px 0; }
+.warn-title { font-weight: 700; color: #B45309; font-size: 14px; margin-bottom: 6px; }
+.warn p { color: var(--text-2); font-size: 14px; }
+
+/* Cmd Grid */
+.cmd-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 18px 0;
+}
+@media (max-width: 680px) { .cmd-grid { grid-template-columns: 1fr; } }
+.cmd-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+}
+.cmd-card code { font-size: 13px; color: var(--hermes); background: var(--hermes-light); }
+.cmd-card p { font-size: 13.5px; color: var(--text-2); margin-top: 6px; }
+
+/* Compare Table */
+.compare-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--card); border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--border);
+  margin: 18px 0;
+}
+.compare-table th, .compare-table td {
+  padding: 12px 16px; text-align: left; font-size: 13.5px;
+  border-bottom: 1px solid var(--border);
+}
+.compare-table thead th {
+  background: #F5EDE5; font-weight: 700; font-size: 13px;
+}
+.compare-table thead th:nth-child(2) { color: var(--hermes); }
+.compare-table thead th:nth-child(3) { color: #D94F1A; }
+.compare-table thead th:nth-child(4) { color: #D97757; }
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; white-space: nowrap; }
+@media (max-width: 520px) {
+  .compare-table th, .compare-table td { padding: 10px 12px; font-size: 13px; }
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+}
+@media (max-width: 680px) { .features-grid { grid-template-columns: 1fr; } }
+
+/* CTA */
+.cta-section { padding: 56px 24px; text-align: center; border-top: 1px solid var(--border); }
+.cta-section h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.cta-section p { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: var(--hermes); color: #fff; margin: 6px;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,0.25); color: #fff; text-decoration: none; }
+.cta-btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: transparent; color: var(--hermes); border: 2px solid var(--hermes-border); margin: 6px;
+}
+.cta-btn-outline:hover { background: var(--hermes-light); transform: translateY(-2px); text-decoration: none; }
+
+/* Footer */
+.footer { border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; }
+.footer-brand { font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.footer p { font-size: 13px; color: var(--text-3); }
+
+/* Animations */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Nav */
+.nav-808ai {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(10, 22, 40, 0.96);
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  backdrop-filter: blur(10px);
+  overflow-x: auto;
+}
+.nav-808ai::-webkit-scrollbar { height: 0; }
+.nav-808ai a { color: rgba(255,255,255,0.82); text-decoration: none; white-space: nowrap; }
+.nav-808ai a:hover { color: #fff; }
+.nav-808ai-brand { font-weight: 800; color: #fff !important; flex-shrink: 0; }
+.nav-808ai-sep, .nav-808ai-dot { color: rgba(255,255,255,0.32); flex-shrink: 0; }
+.nav-808ai-items { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.nav-808ai-link { padding: 6px 8px; border-radius: 999px; }
+.nav-808ai-link.nav-808ai-active { color: #0a1628 !important; background: #e8d49e; font-weight: 700; }
+@media (max-width: 768px) {
+  .nav-808ai { align-items: flex-start; gap: 8px; padding: 10px 12px; }
+  .nav-808ai-items { gap: 6px; font-size: 13px; }
+  .nav-808ai-link { padding: 5px 7px; }
+}
+
+/* Claude 多帳號頁 */
+.copy-btn {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--hermes); color: #fff; border: none; border-radius: 8px;
+  padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+.copy-btn:hover { opacity: 0.9; }
+.install-box:has(.copy-btn) { padding-top: 52px; }
+.faq-q { font-size: 1.05rem; margin: 22px 0 8px; }
+.compare-table { margin: 20px 0; }
+@media (max-width: 520px) {
+  .compare-table td:first-child { white-space: normal; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav-808ai" aria-label="808AI site navigation">
+  <a href="https://808aiworkshop.com/" class="nav-808ai-brand">🔧 808AI 五金行</a>
+  <span class="nav-808ai-sep">|</span>
+  <div class="nav-808ai-items">
+    <a href="https://808aiworkshop.com/" class="nav-808ai-link">首頁</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/openclawvsclaude" class="nav-808ai-link">工具比較</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiopenclawsetup" class="nav-808ai-link">OpenClaw 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aisecuritychecklist" class="nav-808ai-link">安全檢查</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudesetup" class="nav-808ai-link">Claude 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudecodesetup" class="nav-808ai-link">Claude Code</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiworkflow" class="nav-808ai-link">工作流程</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudefeatures" class="nav-808ai-link">Claude 功能</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiccunpacked" class="nav-808ai-link">深度拆解</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aichatgptimageprompts" class="nav-808ai-link">ChatGPT 圖像提示</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/claude-multi-account" class="nav-808ai-link nav-808ai-active">Claude 多帳號</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/hermes-agent" class="nav-808ai-link">Hermes Agent</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/livestream" class="nav-808ai-link">直播記錄</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">🪟 Windows 免費工具 · 一行指令安裝 · 808AI 實測</div>
+  <h1><span class="accent">Claude 多帳號</span><br>一台電腦同時登入兩個帳號</h1>
+  <p class="subtitle">
+    官方 Claude 桌面版一次只能登入一個帳號，換帳號就要登出再登入。<br>
+    這個工具讓公司帳號和個人帳號同時開著，各自有自己的圖示、登入狀態和資料。
+  </p>
+</header>
+
+<main class="container">
+
+  <!-- TOC -->
+  <section class="section" style="padding-bottom:0;">
+    <nav class="toc" aria-label="本頁目錄">
+      <div class="toc-title">本頁內容</div>
+      <ol>
+        <li><a href="#why">為什麼需要這個工具</a></li>
+        <li><a href="#install">一行指令安裝</a></li>
+        <li><a href="#add">新增第二個帳號</a></li>
+        <li><a href="#daily">每天怎麼用</a></li>
+        <li><a href="#modes">兩種模式差在哪</a></li>
+        <li><a href="#store">Microsoft Store 版要多做一步</a></li>
+        <li><a href="#menu">選單功能一覽</a></li>
+        <li><a href="#faq">常見問題</a></li>
+        <li><a href="#uninstall">解除安裝</a></li>
+        <li><a href="#mac">Mac 使用者怎麼辦</a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <!-- 1 Why -->
+  <section class="section section-body" id="why">
+    <h2 class="section-title">1. 為什麼需要這個工具</h2>
+    <p class="section-subtitle">官方桌面版目前不支援多帳號</p>
+    <p>很多人同時有<strong>公司帳號</strong>和<strong>個人帳號</strong>。官方 Claude 桌面版一次只能登入一個，要切換只能登出再登入，有時候還會遺失側邊欄和進行中的工作。</p>
+
+    <div class="feature-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">👥</div>
+        <h3>同時開著</h3>
+        <p>兩個帳號各開一個視窗，用 Alt-Tab 切換，不用登出。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🗂️</div>
+        <h3>資料分開</h3>
+        <p>每個帳號有自己的資料夾，登入狀態、設定互不干擾。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🎨</div>
+        <h3>一眼分得出來</h3>
+        <p>每個帳號的捷徑和工作列圖示都有彩色小徽章，不會開錯。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">✅</div>
+        <h3>免費、免管理員權限</h3>
+        <p>不用付費，也不用「以系統管理員身分執行」，只動到你自己的使用者設定。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 Install -->
+  <section class="section section-border section-body" id="install">
+    <h2 class="section-title">2. 一行指令安裝</h2>
+    <p class="section-subtitle">複製、貼上、按 Enter，大約 10 秒</p>
+
+    <div class="steps">
+      <div class="step">
+        <h4>打開 PowerShell</h4>
+        <p>按鍵盤 <code>Win</code> 鍵，輸入 <strong>PowerShell</strong>，按 Enter。不用選「以系統管理員身分執行」。</p>
+      </div>
+      <div class="step">
+        <h4>貼上這一行，按 Enter</h4>
+        <p>按下方的「複製」，到 PowerShell 視窗按<strong>滑鼠右鍵</strong>就會貼上。</p>
+      </div>
+    </div>
+
+    <div class="install-box">
+      <div class="install-label"># Windows PowerShell</div>
+      <code id="install-cmd">irm https://raw.githubusercontent.com/Rirychh/-/main/tools/claude-multi-windows/install.ps1 | iex</code>
+      <button type="button" class="copy-btn" data-copy="install-cmd">複製</button>
+    </div>
+
+    <p>這條指令會做這些事：</p>
+    <ol>
+      <li>把工具放到 <code>%LOCALAPPDATA%\ClaudeMulti</code></li>
+      <li>在桌面和開始功能表建立「<strong>Claude 多帳號工具</strong>」</li>
+      <li>自動打開選單</li>
+    </ol>
+
+    <div class="tip">
+      <div class="tip-title">💡 想更新到最新版</div>
+      <p>再貼一次同一行指令就好，已經建立的帳號<strong>不會受影響</strong>。</p>
+    </div>
+  </section>
+
+  <!-- 3 Add -->
+  <section class="section section-border section-body" id="add">
+    <h2 class="section-title">3. 新增第二個帳號</h2>
+    <p class="section-subtitle">你原本的 Claude 就是第一個帳號，不用動它</p>
+
+    <div class="steps">
+      <div class="step">
+        <h4>選「1. 新增帳號」</h4>
+        <p>打開「Claude 多帳號工具」，輸入 <code>1</code>。</p>
+      </div>
+      <div class="step">
+        <h4>取一個代號</h4>
+        <p>只能用英文、數字、<code>-</code> 或 <code>_</code>，例如 <code>work</code>。備註可以寫「公司帳號」，也可以直接按 Enter 留空。</p>
+      </div>
+      <div class="step">
+        <h4>模式選 1（官方桌面版）</h4>
+        <p>第一次建議選這個。兩種模式的差別見<a href="#modes">第 5 節</a>。</p>
+      </div>
+      <div class="step">
+        <h4>之後的問題都按 Enter</h4>
+        <p>會幫你建立桌面捷徑，並打開一個新的 Claude 視窗。</p>
+      </div>
+      <div class="step">
+        <h4>看到綠字「確認成功」</h4>
+        <p>代表這個帳號的資料存在獨立資料夾，不會影響原本的帳號。</p>
+      </div>
+      <div class="step">
+        <h4>在新視窗登入第二個帳號</h4>
+        <p>瀏覽器問「要開啟 Claude 嗎？」時，按<strong>「開啟」</strong>。登入完回到工具視窗按 Enter。</p>
+      </div>
+    </div>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 瀏覽器要登入「對的帳號」</div>
+      <p>登入時會跳到瀏覽器。如果瀏覽器已經登入了第一個帳號，請先登出，或改用無痕視窗，不然會登進同一個帳號。</p>
+    </div>
+  </section>
+
+  <!-- 4 Daily -->
+  <section class="section section-border section-body" id="daily">
+    <h2 class="section-title">4. 每天怎麼用</h2>
+    <p class="section-subtitle">點不同的圖示，就是不同的帳號</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>想開</th><th>點這個</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>第一個帳號</td><td>原本的 Claude 圖示</td></tr>
+        <tr><td>第二個帳號</td><td>桌面上的「Claude - work」（圖示右下角有小徽章）</td></tr>
+        <tr><td>第三個以後</td><td>重複「新增帳號」，每個帳號都會有自己的捷徑</td></tr>
+      </tbody>
+    </table>
+
+    <div class="highlight">
+      <h3>📌 工作列也分得開</h3>
+      <p>每個額外帳號在工作列上都是<strong>獨立的按鈕</strong>，有自己的圖示和名稱。把它「釘選到工作列」之後，下次直接點就會開對的帳號。</p>
+    </div>
+  </section>
+
+  <!-- 5 Modes -->
+  <section class="section section-border section-body" id="modes">
+    <h2 class="section-title">5. 兩種模式差在哪</h2>
+    <p class="section-subtitle">新增帳號時要選一種</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th></th><th>1. 桌面版</th><th>2. 網頁版</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>開出來的是</td><td>官方 Claude 桌面版</td><td>Edge／Chrome 的 claude.ai 獨立視窗</td></tr>
+        <tr><td>Claude Code、Cowork、MCP</td><td>✅ 都能用</td><td>❌ 沒有</td></tr>
+        <tr><td>穩定度</td><td>Claude 大改版時可能要更新工具</td><td>最穩定，一定能用</td></tr>
+        <tr><td>適合</td><td>大部分人</td><td>只聊天，或桌面版模式不能用時</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 6 Store -->
+  <section class="section section-border section-body" id="store">
+    <h2 class="section-title">6. Microsoft Store 版要多做一步</h2>
+    <p class="section-subtitle">只有第一次登入額外帳號時要做，之後不用</p>
+    <p>如果你的 Claude 是從 Microsoft Store 安裝的，工具會自動偵測。第一次登入額外帳號時，會請你在 Windows 設定裡指定一次「登入連結交給誰處理」：</p>
+
+    <div class="steps">
+      <div class="step">
+        <h4>工具會自動打開「預設應用程式」</h4>
+        <p>按 Enter 就會開啟設定頁。</p>
+      </div>
+      <div class="step">
+        <h4>搜尋 claude</h4>
+        <p>在最上面「為檔案類型或連結類型設定預設值」的搜尋框輸入 <code>claude</code>，點出現的「CLAUDE」那一列。</p>
+      </div>
+      <div class="step">
+        <h4>選「Claude 多帳號工具」</h4>
+        <p>按「設為預設值」。如果 Windows 問要不要切換，選「仍要切換」。</p>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-title">💡 不用擔心原本的帳號</div>
+      <p>設定之後，平常的 Claude 連結<strong>還是會開到原本的 Claude</strong>。只有在你登入額外帳號時，工具才會把登入結果送給那個帳號。如果它分不出是哪個帳號，會跳出小視窗問你要交給誰。</p>
+    </div>
+  </section>
+
+  <!-- 7 Menu -->
+  <section class="section section-border section-body" id="menu">
+    <h2 class="section-title">7. 選單功能一覽</h2>
+    <p class="section-subtitle">打開「Claude 多帳號工具」就會看到</p>
+
+    <div class="cmd-grid">
+      <div class="cmd-card"><code>1</code><p>新增帳號</p></div>
+      <div class="cmd-card"><code>2</code><p>開啟帳號（不用捷徑也能開）</p></div>
+      <div class="cmd-card"><code>3</code><p>重新登入帳號（登入失敗或被登出時用）</p></div>
+      <div class="cmd-card"><code>4</code><p>建立桌面捷徑（捷徑不小心刪掉時用）</p></div>
+      <div class="cmd-card"><code>5</code><p>列出所有帳號</p></div>
+      <div class="cmd-card"><code>6</code><p>刪除帳號</p></div>
+      <div class="cmd-card"><code>7</code><p>解除安裝這個工具</p></div>
+      <div class="cmd-card"><code>0</code><p>離開</p></div>
+    </div>
+  </section>
+
+  <!-- 8 FAQ -->
+  <section class="section section-border section-body" id="faq">
+    <h2 class="section-title">8. 常見問題</h2>
+    <p class="section-subtitle">大部分狀況都能自己解決</p>
+
+    <h3 class="faq-q">出現黃字「資料夾還是空的」</h3>
+    <p>代表你的 Claude 版本不支援分開帳號。輸入 <code>6</code> 刪掉這個帳號，再輸入 <code>1</code> 重建，模式改選 <code>2</code>（網頁版）。</p>
+
+    <h3 class="faq-q">登入後跑回第一個帳號，或登入卡住</h3>
+    <p>輸入 <code>3</code>（重新登入帳號）再試一次。確認瀏覽器登入的是第二個帳號（可以用無痕視窗）。</p>
+
+    <h3 class="faq-q">PowerShell 出現紅字錯誤</h3>
+    <p>把整段紅字截圖或複製下來，到 808AI 社群回報。</p>
+
+    <h3 class="faq-q">公司電腦擋掉一行指令安裝</h3>
+    <p>到 <a href="https://github.com/Rirychh/-/tree/main/tools/claude-multi-windows" target="_blank" rel="noopener">GitHub</a> 下載 <code>ClaudeMulti.ps1</code> 和 <code>ClaudeMulti.bat</code>，放在同一個資料夾，雙擊 <code>ClaudeMulti.bat</code>。出現「Windows 已保護您的電腦」時，按「其他資訊」→「仍要執行」。</p>
+
+    <h3 class="faq-q">這個工具會看到我的密碼嗎？</h3>
+    <p>不會。登入都在 Claude 自己的視窗和瀏覽器裡完成，工具不會讀取或儲存你的密碼。</p>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 這不是 Anthropic 官方工具</div>
+      <p>Claude 大改版後，桌面版模式有可能暫時失效，那時改用網頁版模式即可。使用多個帳號時，請遵守 Anthropic 的使用條款。</p>
+    </div>
+  </section>
+
+  <!-- 9 Uninstall -->
+  <section class="section section-border section-body" id="uninstall">
+    <h2 class="section-title">9. 解除安裝</h2>
+    <p class="section-subtitle">一個步驟，乾淨移除</p>
+    <p>打開「Claude 多帳號工具」，輸入 <code>7</code>，再輸入 <code>YES</code>。</p>
+    <ul>
+      <li><strong>會移除：</strong>這個工具、所有額外帳號的本機資料和捷徑</li>
+      <li><strong>不會動到：</strong>你原本的 Claude 桌面版、雲端上的對話紀錄</li>
+    </ul>
+  </section>
+
+  <!-- 10 Mac -->
+  <section class="section section-border section-body" id="mac">
+    <h2 class="section-title">10. Mac 使用者怎麼辦</h2>
+    <p class="section-subtitle">這個工具只支援 Windows，Mac 有兩個替代方案</p>
+
+    <div class="feature-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">💳</div>
+        <h3>Multi-Claude（付費）</h3>
+        <p>第三方 Mac app，一次買斷約 US$20。每個帳號一個獨立 app。非官方工具，購買前請先確認它支援哪些桌面版功能。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🌐</div>
+        <h3>Chrome 設定檔（免費）</h3>
+        <p>建兩個 Chrome 設定檔，各自登入 claude.ai，再用「安裝為應用程式」變成兩個獨立視窗。只能聊天，沒有桌面版專屬功能。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>開始用兩個帳號吧</h2>
+  <p>原始碼公開，歡迎檢查</p>
+  <div>
+    <a class="cta-btn" href="#install">
+      🪟 一行指令安裝
+    </a>
+    <a class="cta-btn-outline" href="https://github.com/Rirychh/-/tree/main/tools/claude-multi-windows" target="_blank" rel="noopener">
+      📦 GitHub 原始碼
+    </a>
+    <a class="cta-btn-outline" href="https://808aiworkshop.com/808aiclaudesetup">
+      📘 Claude 指南
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-brand">🔧 808 AI 五金行</div>
+  <p>賣的不是焦慮，是「親自驗證過的 AI 工具與方法」</p>
+  <p style="margin-top: 6px;">All Rights Reserved © 2026</p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const text = document.getElementById(btn.dataset.copy).textContent.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = '已複製 ✓';
+    } catch (e) {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById(btn.dataset.copy));
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = '請按 Ctrl+C';
+    }
+    setTimeout(() => { btn.textContent = '複製'; }, 2000);
+  });
+});
+</script>
+
+</body>
+</html>

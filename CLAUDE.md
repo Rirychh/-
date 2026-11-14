@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 這個 Repo 是什麼
 
-808 AI 五金行（808aiworkshop.com）的靜態網站頁面。目前包含 Hermes Agent 完整介紹與安裝教學頁（`index.html`），純 HTML + CSS + 少量 Vanilla JS，無框架、無建置工具、無依賴套件。
+808 AI 五金行（808aiworkshop.com）的靜態網站頁面。目前包含 Hermes Agent 完整介紹與安裝教學頁（`index.html`）、Claude 多帳號教學頁（`claude-multi-account.html`，對應 `tools/claude-multi-windows/` 的 Windows 工具），純 HTML + CSS + 少量 Vanilla JS，無框架、無建置工具、無依賴套件。
 
 ## 開發與預覽
 
