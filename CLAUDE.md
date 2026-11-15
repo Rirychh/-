@@ -13,6 +13,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `index.html` | Hermes Agent 完整介紹與安裝教學 | `/hermes-agent` | 紫 `#7C3AED` |
 | `image-cards.html` | 圖卡量產工作流（三角分工 + 審核標準） | `/808aiimagecards` | teal `#0F766E` |
 
+## 圖卡生成工作流（skill）
+
+`.claude/skills/image-card/` 是 `image-cards.html` 那套流程的可執行版本：
+使用者只講需求，Claude 寫畫圖指令、送去產圖、照五條標準審圖、沒過改指令重畫。
+
+```
+.claude/skills/image-card/
+├── SKILL.md                      # 五步流程主文件
+├── scripts/check_image.py        # 比例與解析度的機械判定（需 Pillow）
+└── references/
+    ├── prompt-template.md        # 畫圖指令模板 + 平台→比例對照
+    ├── characters.md             # 角色設定卡登錄（咪卡）
+    └── review.md                 # 五條審核標準、判定格式、重試上限
+```
+
+新增角色時改 `references/characters.md`；調整審核標準改 `references/review.md`。
+網頁（給人看）與 skill（給 Claude 跑）講的是同一套流程，改其中一邊時記得同步另一邊。
+
 ## 開發與預覽
 
 直接用瀏覽器開啟 `index.html` 即可預覽，或用任意靜態伺服器：
