@@ -4,7 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 這個 Repo 是什麼
 
-808 AI 五金行（808aiworkshop.com）的靜態網站頁面。目前包含 Hermes Agent 完整介紹與安裝教學頁（`index.html`），純 HTML + CSS + 少量 Vanilla JS，無框架、無建置工具、無依賴套件。
+808 AI 五金行（808aiworkshop.com）的靜態網站頁面。純 HTML + CSS + 少量 Vanilla JS，無框架、無建置工具、無依賴套件。
+
+目前頁面：
+
+| 檔案 | 內容 | 線上路徑 | accent 色 |
+|------|------|----------|-----------|
+| `index.html` | Hermes Agent 完整介紹與安裝教學 | `/hermes-agent` | 紫 `#7C3AED` |
+| `image-cards.html` | 圖卡量產工作流（三角分工 + 審核標準） | `/808aiimagecards` | teal `#0F766E` |
 
 ## 開發與預覽
 
@@ -32,11 +39,11 @@ npx serve .
 
 ### CSS 設計語言
 
-CSS 變數定義在 `:root`，主要色系：
+CSS 變數定義在 `:root`。**每頁有自己的 accent 色**（`index.html` 用 `--hermes` 紫，`image-cards.html` 用 `--accent` teal），其餘 token 兩頁一致：
 
 | 變數 | 用途 |
 |------|------|
-| `--hermes: #7C3AED` | 主題紫色（按鈕、強調、連結） |
+| `--hermes` / `--accent` | 該頁主題色（按鈕、強調、連結、步驟編號） |
 | `--primary: #E8751A` | 808AI 品牌橘色（tip box） |
 | `--bg: #FAF5F0` | 頁面背景 |
 | `--card: #FFFFFF` | 卡片背景 |
