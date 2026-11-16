@@ -13,7 +13,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `index.html` | Hermes Agent 完整介紹與安裝教學 | `/hermes-agent` | 紫 `#7C3AED` |
 | `image-cards.html` | 圖卡量產工作流（三角分工 + 審核標準） | `/808aiimagecards` | teal `#0F766E` |
 
-## 圖卡生成工作流（skill）
+## Skills
+
+這個 repo 帶兩個 skill，一個是通用模式，一個是它的實例。
+
+### `problem-workflow` — 解決問題的通用工作流
+
+不限題材。核心是：做與審分開、驗收標準在動手前寫成明文、能機械判的真的
+寫成程式、重試給上限、卡住時帶著失敗紀錄回報。
+
+```
+.claude/skills/problem-workflow/
+├── SKILL.md                        # 三個角色 + 五步 + 重試上限 + 何時別用
+├── assets/task-card.md             # 可直接複製去填的任務卡
+└── references/
+    ├── acceptance.md               # 怎麼寫可逐條判的標準（三問法、反例對照）
+    ├── retry.md                    # 換路規則、不必跑滿預算的情況、回報格式
+    └── example-image-card.md       # 套在圖卡上的完整對照
+```
+
+### `image-card` — 圖卡生成工作流（上面那套模式的實例）
 
 `.claude/skills/image-card/` 是 `image-cards.html` 那套流程的可執行版本：
 使用者只講需求，Claude 寫畫圖指令、送去產圖、照五條標準審圖、沒過改指令重畫。
@@ -29,7 +48,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```
 
 新增角色時改 `references/characters.md`；調整審核標準改 `references/review.md`。
-網頁（給人看）與 skill（給 Claude 跑）講的是同一套流程，改其中一邊時記得同步另一邊。
+`image-cards.html`（給人看）與這個 skill（給 Claude 跑）講的是同一套流程，
+改其中一邊時記得同步另一邊。
 
 ## 開發與預覽
 

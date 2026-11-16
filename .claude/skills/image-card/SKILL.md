@@ -120,3 +120,12 @@ python3 scripts/check_image.py <圖片路徑> --expect 4:5
 | `references/characters.md` | 圖裡有角色時，複製指令用區塊、審圖時對照 |
 | `references/review.md` | 審圖時（步驟四），五條標準細節、判定格式、重試與回報格式 |
 | `scripts/check_image.py` | 審圖時，判比例與解析度 |
+
+---
+
+## 這套模式的通用版
+
+本 skill 是「先寫明文標準、做與審分開、重試給上限」這套模式套在圖卡上的實例。
+同樣的模式要用在別的題材（寫程式、做報表、寫文章）時，看
+`.claude/skills/problem-workflow/`——那份是不限題材的通用版，
+本 skill 是它的參考實作。
