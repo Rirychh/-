@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>/advisor fable — 讓 Claude Code 在關鍵時刻先問過 Fable｜808 AI 五金行</title>
+<meta name="description" content="Claude Code 的 /advisor fable 指令：平常仍由 Sonnet 或 Opus 做事，遇到要選做法、同一個錯誤重複、準備宣告完成之前，主模型會自己去請教 Fable。本頁含觸發時機、設定教學與使用建議。">
+
+<link rel="canonical" href="https://808aiworkshop.com/advisor-fable">
+<meta property="og:title" content="/advisor fable — 讓 Claude Code 在關鍵時刻先問過 Fable｜808 AI 五金行">
+<meta property="og:description" content="一頁包：顧問模式是什麼、三個自動觸發時機、跟換模型／Subagent 的差別、兩分鐘設定教學、什麼情況值得開。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://808aiworkshop.com/advisor-fable">
+<meta property="og:site_name" content="808 AI 五金行">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  background: #FAF5F0;
+  color: #2D2A26;
+  line-height: 1.75;
+  font-size: 16px;
+}
+
+:root {
+  --primary: #E8751A;
+  --primary-light: #FDF0E6;
+  --primary-border: #F5C89A;
+  --accent: #0F766E;
+  --accent-light: #E7F3F1;
+  --accent-border: #9CCFC8;
+  --bg: #FAF5F0;
+  --card: #FFFFFF;
+  --text: #2D2A26;
+  --text-2: #6B6560;
+  --text-3: #9B9590;
+  --border: #E8E0D8;
+  --max-w: 880px;
+}
+
+h1, h2, h3 { font-family: 'Noto Serif TC', serif; line-height: 1.3; }
+a { color: var(--accent); text-decoration: none; transition: all 0.2s; }
+a:hover { text-decoration: underline; }
+code { font-family: 'JetBrains Mono', monospace; background: #F5EDE5; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 72px 24px 56px;
+  position: relative;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 3px; background: var(--accent); border-radius: 2px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  font-size: 13px; font-weight: 600; padding: 6px 18px;
+  border-radius: 100px; letter-spacing: 0.5px; margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  font-weight: 700; margin-bottom: 16px;
+}
+.hero h1 .accent { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.82em; }
+.hero .subtitle {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  color: var(--text-2); max-width: 600px; margin: 0 auto;
+}
+
+/* Section */
+.section { padding: 56px 0; }
+.section-border { border-top: 1px solid var(--border); }
+.section-title { font-size: 1.4rem; margin-bottom: 8px; }
+.section-subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 32px; }
+.section-body p { color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body strong { color: var(--text); }
+.section-body ul, .section-body ol { padding-left: 22px; color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body li { margin-bottom: 6px; }
+
+/* Feature Grid */
+.feature-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+}
+@media (max-width: 680px) { .feature-grid { grid-template-columns: 1fr; } }
+.feature-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 28px 24px; transition: all 0.3s;
+}
+.feature-card:hover {
+  border-color: var(--accent-border); transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+.feature-icon { font-size: 28px; margin-bottom: 12px; }
+.feature-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.feature-card p { font-size: 14px; color: var(--text-2); }
+
+/* Highlight Box */
+.highlight {
+  background: var(--accent-light); border: 1.5px solid var(--accent-border);
+  border-radius: 14px; padding: 24px 28px; margin: 28px 0;
+}
+.highlight h3 { color: var(--accent); font-size: 1.05rem; margin-bottom: 10px; }
+.highlight p { font-size: 14px; color: var(--text-2); }
+.highlight strong { color: var(--text); }
+
+/* Flow */
+.flow {
+  display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin-top: 14px;
+}
+.flow-step {
+  flex: 1 1 140px; background: var(--card); border: 1px solid var(--accent-border);
+  border-radius: 10px; padding: 12px 14px;
+}
+.flow-step .flow-who { font-size: 11.5px; letter-spacing: 0.5px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+.flow-step p { font-size: 13px; color: var(--text-2); margin: 0; }
+
+/* TOC */
+.toc {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px 26px; margin: 32px 0;
+}
+.toc-title { font-size: 13px; color: var(--text-3); font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+.toc ol { padding-left: 20px; margin: 0; color: var(--text-2); }
+.toc li { font-size: 14px; margin-bottom: 6px; }
+.toc a { color: var(--text); }
+.toc a:hover { color: var(--accent); }
+
+/* Install Box */
+.install-box {
+  background: #1e1e2e; border-radius: 12px; padding: 22px 26px;
+  margin: 20px 0; position: relative;
+}
+.install-box code {
+  font-family: 'JetBrains Mono', monospace; color: #a6e3a1;
+  font-size: 13.5px; background: none; padding: 0;
+  display: block; white-space: pre-wrap; word-break: break-all;
+}
+.install-label {
+  font-size: 12px; color: #6c7086; margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Steps */
+.steps { counter-reset: step; margin: 24px 0; }
+.step {
+  counter-increment: step;
+  padding: 20px 20px 20px 64px; position: relative;
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 12px; margin-bottom: 14px;
+}
+.step::before {
+  content: counter(step);
+  position: absolute; left: 20px; top: 20px;
+  width: 32px; height: 32px; background: var(--accent-light);
+  color: var(--accent); font-weight: 800; font-size: 15px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; font-family: 'Noto Sans TC', sans-serif; }
+.step p { font-size: 14px; color: var(--text-2); margin-bottom: 6px; }
+.step code { font-size: 13px; }
+
+/* Tip */
+.tip { background: var(--primary-light); border: 1px solid var(--primary-border); border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+.tip-title { font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.tip p { color: var(--text-2); font-size: 14px; }
+.tip strong { color: var(--text); }
+
+/* Warn */
+.warn { background: #FFF5E0; border: 1px solid #F5D89A; border-radius: 12px; padding: 18px 22px; margin: 20px 0; }
+.warn-title { font-weight: 700; color: #B45309; font-size: 14px; margin-bottom: 6px; }
+.warn p { color: var(--text-2); font-size: 14px; }
+
+/* Cmd Grid */
+.cmd-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 18px 0;
+}
+@media (max-width: 680px) { .cmd-grid { grid-template-columns: 1fr; } }
+.cmd-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+}
+.cmd-card code { font-size: 13px; color: var(--accent); background: var(--accent-light); }
+.cmd-card p { font-size: 13.5px; color: var(--text-2); margin-top: 6px; }
+
+/* Compare Table */
+.compare-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--card); border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--border);
+  margin: 18px 0;
+}
+.compare-table th, .compare-table td {
+  padding: 12px 16px; text-align: left; font-size: 13.5px;
+  border-bottom: 1px solid var(--border);
+}
+.compare-table thead th {
+  background: #F5EDE5; font-weight: 700; font-size: 13px;
+}
+.compare-table thead th:nth-child(2) { color: var(--accent); }
+.compare-table thead th:nth-child(3) { color: #D94F1A; }
+.compare-table thead th:nth-child(4) { color: #D97757; }
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; white-space: nowrap; }
+@media (max-width: 520px) {
+  .compare-table th, .compare-table td { padding: 10px 12px; font-size: 13px; }
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+}
+@media (max-width: 680px) { .features-grid { grid-template-columns: 1fr; } }
+
+/* CTA */
+.cta-section { padding: 56px 24px; text-align: center; border-top: 1px solid var(--border); }
+.cta-section h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.cta-section p { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: var(--accent); color: #fff; margin: 6px;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,118,110,0.25); color: #fff; text-decoration: none; }
+.cta-btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: transparent; color: var(--accent); border: 2px solid var(--accent-border); margin: 6px;
+}
+.cta-btn-outline:hover { background: var(--accent-light); transform: translateY(-2px); text-decoration: none; }
+
+/* Footer */
+.footer { border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; }
+.footer-brand { font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.footer p { font-size: 13px; color: var(--text-3); }
+
+/* Animations */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Nav */
+.nav-808ai {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(10, 22, 40, 0.96);
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  backdrop-filter: blur(10px);
+  overflow-x: auto;
+}
+.nav-808ai::-webkit-scrollbar { height: 0; }
+.nav-808ai a { color: rgba(255,255,255,0.82); text-decoration: none; white-space: nowrap; }
+.nav-808ai a:hover { color: #fff; }
+.nav-808ai-brand { font-weight: 800; color: #fff !important; flex-shrink: 0; }
+.nav-808ai-sep, .nav-808ai-dot { color: rgba(255,255,255,0.32); flex-shrink: 0; }
+.nav-808ai-items { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.nav-808ai-link { padding: 6px 8px; border-radius: 999px; }
+.nav-808ai-link.nav-808ai-active { color: #0a1628 !important; background: #e8d49e; font-weight: 700; }
+@media (max-width: 768px) {
+  .nav-808ai { align-items: flex-start; gap: 8px; padding: 10px 12px; }
+  .nav-808ai-items { gap: 6px; font-size: 13px; }
+  .nav-808ai-link { padding: 5px 7px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav-808ai" aria-label="808AI site navigation">
+  <a href="https://808aiworkshop.com/" class="nav-808ai-brand">🔧 808AI 五金行</a>
+  <span class="nav-808ai-sep">|</span>
+  <div class="nav-808ai-items">
+    <a href="https://808aiworkshop.com/" class="nav-808ai-link">首頁</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/openclawvsclaude" class="nav-808ai-link">工具比較</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiopenclawsetup" class="nav-808ai-link">OpenClaw 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aisecuritychecklist" class="nav-808ai-link">安全檢查</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudesetup" class="nav-808ai-link">Claude 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudecodesetup" class="nav-808ai-link">Claude Code</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/advisor-fable" class="nav-808ai-link nav-808ai-active">Fable 顧問</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiworkflow" class="nav-808ai-link">工作流程</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudefeatures" class="nav-808ai-link">Claude 功能</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiccunpacked" class="nav-808ai-link">深度拆解</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aichatgptimageprompts" class="nav-808ai-link">ChatGPT 圖像提示</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/hermes-agent" class="nav-808ai-link">Hermes Agent</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/livestream" class="nav-808ai-link">直播記錄</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">⚖️ Claude Code 2.1.321+ · 顧問模式 · 兩分鐘設定</div>
+  <h1><span class="accent">/advisor fable</span><br>關鍵時刻，先問過顧問再動手</h1>
+  <p class="subtitle">
+    設定之後，平常還是由 Sonnet 或 Opus 做事。遇到要決定做法、同一個錯誤一直重複，或準備宣告完成之前，
+    Claude 會自己去請教 Fable——最後由主模型決定要不要照做。
+  </p>
+</header>
+
+<main class="container">
+
+  <!-- What is it -->
+  <section class="section">
+    <h2 class="section-title">這是什麼？</h2>
+    <p class="section-subtitle">一句話說完：不是換模型，是多請一個顧問</p>
+    <p style="font-size:15px;color:var(--text-2);margin-bottom:20px;">
+      <code>/advisor fable</code> 不會把你的主模型換成 Fable。你原本用 Sonnet 還是 Opus，<strong>設定完照樣是它在做事</strong>。改變的是：在少數幾個容易出錯的節點上，主模型會<strong>先停下來，把整段對話交給 Fable 看過</strong>，聽完建議再繼續。
+    </p>
+    <p style="font-size:15px;color:var(--text-2);margin-bottom:20px;">
+      這跟「你自己開另一個視窗問第二個模型」是同一件事，差別只在於——<strong>它會自己判斷什麼時候該問</strong>，而且 Fable 拿到的是完整上下文，不是你手動複製的片段。
+    </p>
+
+    <div class="highlight">
+      <h3>🔄 一次顧問諮詢的完整流程</h3>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-who">主模型</div>
+          <p>正常做事，寫 code、跑指令、改檔案</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-who">觸發</div>
+          <p>碰到關鍵節點，暫停手上動作</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-who">FABLE</div>
+          <p>讀完整段對話，給出建議</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-who">主模型</div>
+          <p>決定採納、部分採納或不採納，然後繼續</p>
+        </div>
+      </div>
+      <p style="margin-top:14px;">
+        <strong>重點在最後一步：</strong>Fable 給的是建議，不是命令。決策權仍然在主模型身上——它可能聽，也可能說明理由後走自己的路。
+      </p>
+    </div>
+  </section>
+
+  <!-- Triggers -->
+  <section class="section section-border">
+    <h2 class="section-title">三個會自動請教顧問的時刻</h2>
+    <p class="section-subtitle">都是「人類工程師也該停下來想一下」的那種節點</p>
+
+    <div class="feature-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🧭</div>
+        <h3>要決定做法的時候</h3>
+        <p>有兩三條路可以走、架構要怎麼切、用哪個套件——這種岔路口一旦走錯，後面幾十次工具呼叫都在白做。開工前先問，成本最低。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🔁</div>
+        <h3>同一個錯誤一直重複</h3>
+        <p>改了三次、測試還是同一行紅字——這通常代表問題不在那行 code，而在前面的假設。卡在迴圈裡的模型最需要一雙外面的眼睛。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">✅</div>
+        <h3>準備宣告完成之前</h3>
+        <p>「做好了」是最容易說謊的一句話。宣告完成前讓顧問回頭看一次整段對話，確認需求真的被滿足、沒有偷偷縮小範圍。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🙋</div>
+        <h3>你自己開口要的時候</h3>
+        <p>不等它自己判斷，直接在提示裡寫「這題先問一下 Fable 的意見」，它就會當場去諮詢。等於手上隨時有一張可以打的求救牌。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section class="section section-border section-body">
+    <h2 class="section-title">為什麼這樣分工有效？</h2>
+    <p class="section-subtitle">做事的人跟檢查的人，本來就不該是同一個</p>
+
+    <p><strong>一、做事的人會被自己的脈絡綁住。</strong>主模型跑了二十輪工具呼叫之後，整個注意力都黏在「我現在正在修的這一行」上。它很難退一步問「我一開始的方向是不是就錯了」——因為那等於推翻自己前面二十步。</p>
+
+    <p><strong>二、顧問讀的是整段對話，不是片段。</strong>Fable 拿到的是從你第一句需求到現在的完整記錄。它看得到「使用者一開始要的是 A，但做到一半不知不覺變成 B」這種漂移，而身在其中的主模型往往看不到。</p>
+
+    <p><strong>三、建議權跟執行權分開，才不會互相干擾。</strong>顧問不接管鍵盤，只給意見；主模型保留判斷。這樣既拿到第二視角，又不會讓兩個模型互相覆蓋對方的工作。</p>
+
+    <div class="tip">
+      <div class="tip-title">💡 808AI 的白話解釋</div>
+      <p>把它想成工地：<strong>Sonnet / Opus 是師傅</strong>，負責動手施工；<strong>Fable 是請來的結構技師</strong>，不碰工具，但在「要選哪種工法」、「同一面牆裂三次」、「要驗收了」這三個時候過來看一眼。師傅可以不聽技師的，但至少聽過了。</p>
+    </div>
+  </section>
+
+  <!-- Compare -->
+  <section class="section section-border">
+    <h2 class="section-title">⚡ 跟其他做法比較</h2>
+    <p class="section-subtitle">顧問模式 vs 直接換模型 vs 丟 Subagent</p>
+
+    <table class="compare-table fade-up">
+      <thead>
+        <tr>
+          <th></th>
+          <th>⚖️ /advisor fable</th>
+          <th>🔀 直接換成 Fable</th>
+          <th>🧩 丟給 Subagent</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>誰在做事</td><td>Sonnet / Opus（不變）</td><td>Fable 全包</td><td>主模型 + 子代理分工</td></tr>
+        <tr><td>第二視角</td><td>✓ 關鍵時刻自動介入</td><td>✗ 只有一個視角</td><td>△ 看你怎麼寫 prompt</td></tr>
+        <tr><td>拿到的上下文</td><td>完整對話</td><td>完整對話</td><td>只有你交辦的那段</td></tr>
+        <tr><td>誰做最後決定</td><td>主模型（顧問只建議）</td><td>Fable</td><td>主模型彙整結果</td></tr>
+        <tr><td>設定成本</td><td>一行指令</td><td>一行指令</td><td>要自己設計任務拆分</td></tr>
+        <tr><td>額外開銷</td><td>只在觸發時多一次諮詢</td><td>無</td><td>每個子代理都要跑完整流程</td></tr>
+        <tr><td>最適合</td><td>長任務、容易走偏的工作</td><td>單純想用 Fable 做事</td><td>可平行拆開的獨立子任務</td></tr>
+      </tbody>
+    </table>
+    <p style="text-align:center;margin-top:14px;font-size:13.5px;color:var(--text-3);">
+      想看 Claude Code 其他功能？<a href="https://808aiworkshop.com/808aiclaudefeatures" style="color:var(--accent);">→ Claude 功能總覽</a>
+    </p>
+  </section>
+
+  <!-- TOC -->
+  <div class="toc fade-up">
+    <div class="toc-title">📖 設定與使用教學</div>
+    <ol>
+      <li><a href="#setup">四步設定</a>（更新版本 → 下指令 → 確認 → 關閉）</li>
+      <li><a href="#cmd">指令速查</a></li>
+      <li><a href="#when">什麼情況值得開</a></li>
+      <li><a href="#faq">常見問題</a></li>
+    </ol>
+  </div>
+
+  <!-- Setup -->
+  <section class="section section-border section-body" id="setup">
+    <h2 class="section-title">1. 四步設定</h2>
+    <p class="section-subtitle">沒有設定檔、沒有 API key，兩分鐘以內</p>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <h4>把 Claude Code 更新到 2.1.321 以上</h4>
+        <p>這個指令需要 <strong>2.1.321 或更新的版本</strong>。先確認目前版本：</p>
+        <div class="install-box">
+          <div class="install-label"># 查版本</div>
+          <code>claude --version</code>
+        </div>
+        <p>版本不夠就更新：</p>
+        <div class="install-box">
+          <div class="install-label"># 更新（內建更新器）</div>
+          <code>claude update</code>
+        </div>
+        <p>如果你當初是用 npm 全域安裝的，也可以改用 <code>npm install -g @anthropic-ai/claude-code@latest</code>。更新完重開一次 Claude Code。</p>
+      </div>
+
+      <div class="step fade-up">
+        <h4>輸入 /advisor fable</h4>
+        <p>在 Claude Code 的輸入列直接打：</p>
+        <div class="install-box">
+          <div class="install-label"># 在 Claude Code 裡輸入</div>
+          <code>/advisor fable</code>
+        </div>
+        <p>看到 <code>Advisor set to</code> 的回覆，就代表設定好了。不需要重開、不需要改任何設定檔。</p>
+      </div>
+
+      <div class="step fade-up">
+        <h4>照常做事就好</h4>
+        <p>設定完<strong>不用改變任何使用習慣</strong>。該怎麼下指令就怎麼下，顧問會自己在該出現的時候出現。</p>
+        <p>如果你想要它<strong>現在就去問</strong>，直接在提示裡講明白即可，例如：「這個架構先問一下 Fable 的意見再動手」、「宣告完成前請顧問看一遍」。</p>
+      </div>
+
+      <div class="step fade-up">
+        <h4>不想用了就關掉</h4>
+        <div class="install-box">
+          <div class="install-label"># 關閉顧問模式</div>
+          <code>/advisor off</code>
+        </div>
+        <p>關掉之後就完全回到原本的行為，不會留下任何殘留設定。隨時可以再打開。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commands -->
+  <section class="section section-border section-body" id="cmd">
+    <h2 class="section-title">2. 指令速查</h2>
+    <p class="section-subtitle">總共就這幾個，記不起來也沒關係</p>
+
+    <div class="cmd-grid">
+      <div class="cmd-card">
+        <code>/advisor fable</code>
+        <p>開啟顧問模式，指定 Fable 當顧問</p>
+      </div>
+      <div class="cmd-card">
+        <code>/advisor off</code>
+        <p>關閉顧問模式，回到原本行為</p>
+      </div>
+      <div class="cmd-card">
+        <code>claude --version</code>
+        <p>查目前版本，必須 ≥ 2.1.321</p>
+      </div>
+      <div class="cmd-card">
+        <code>claude update</code>
+        <p>更新 Claude Code 到最新版</p>
+      </div>
+    </div>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 設定前先確認這兩件事</div>
+      <p>
+        <strong>版本不夠會找不到指令</strong>：2.1.321 以前的版本沒有 <code>/advisor</code>，輸入後不會有 <code>Advisor set to</code> 的回覆。先更新再試。<br>
+        <strong>顧問諮詢會多花一次模型呼叫</strong>：每次觸發都是額外一輪，長任務下來會累積。覺得吃不消就 <code>/advisor off</code>，需要時再臨時打開。
+      </p>
+    </div>
+  </section>
+
+  <!-- When -->
+  <section class="section section-border section-body" id="when">
+    <h2 class="section-title">3. 什麼情況值得開？</h2>
+    <p class="section-subtitle">不是每個任務都需要顧問——開錯場合只是多花錢</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th></th><th>值得開</th><th>可以不用開</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>任務長度</td><td>要跑很多輪、會持續一兩個小時的大工程</td><td>改個錯字、跑個指令這種一兩步的小事</td></tr>
+        <tr><td>任務性質</td><td>架構決策、重構、要動到很多檔案的改動</td><td>有標準答案、照著做就好的例行工作</td></tr>
+        <tr><td>你的狀態</td><td>你人不在旁邊、沒空盯著每一步</td><td>你全程看著，自己就是那個顧問</td></tr>
+        <tr><td>風險</td><td>走錯方向代價很高（上線、資料、金流）</td><td>做壞了隨時可以 undo 的實驗</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip">
+      <div class="tip-title">💡 808AI 的用法建議</div>
+      <p>
+        <strong>別整天開著。</strong>最划算的用法是「平常關著，遇到硬仗才開」——要重構、要動架構、要交付給客戶的東西，開工前打一次 <code>/advisor fable</code>，做完 <code>/advisor off</code>。<br><br>
+        <strong>卡住時當求救牌打。</strong>同一個錯誤已經繞第三圈了，與其再讓它試第四次，不如開顧問模式，或是直接在提示裡要求「先問 Fable」。繞不出來的迴圈，多半要靠外面的視角打破。<br><br>
+        <strong>把它當驗收關卡。</strong>如果你最在意的是「它說做好了，但其實沒做好」，那顧問在「宣告完成之前」這個觸發點，就是整個功能最值錢的地方。
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-border section-body" id="faq">
+    <h2 class="section-title">4. 常見問題</h2>
+
+    <h3 style="font-size:1.05rem;margin:18px 0 8px;">設定之後，是不是就變成 Fable 在幫我做事？</h3>
+    <p>不是。做事的仍然是你原本的 Sonnet 或 Opus。Fable 只在被請教的時候出現，給完建議就退場，不會接手任何實際操作。</p>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">主模型一定會照 Fable 的建議做嗎？</h3>
+    <p>不一定。Fable 給的是意見，<strong>最後由主模型決定要不要照做</strong>。這是刻意的設計——顧問如果能直接推翻執行者，就不叫顧問了。</p>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">Fable 看得到我的完整對話嗎？</h3>
+    <p>會。它會讀完整段對話再給建議——這正是它能看出「方向跑偏了」的原因。如果你的對話裡有敏感內容，開顧問模式前自己先衡量一下。</p>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">輸入 /advisor fable 沒反應 / 找不到這個指令</h3>
+    <ul>
+      <li>先跑 <code>claude --version</code>，確認版本有沒有到 <strong>2.1.321</strong></li>
+      <li>版本不夠就 <code>claude update</code>，更新完<strong>重開 Claude Code</strong> 再試一次</li>
+      <li>成功的話會看到 <code>Advisor set to</code>，沒看到就是還沒設定成功</li>
+    </ul>
+
+    <h3 style="font-size:1.05rem;margin:22px 0 8px;">設定會一直留著嗎？</h3>
+    <p>不想要就 <code>/advisor off</code>，立刻回到原本行為。808AI 的建議是平常關著、硬仗才開，而不是設定完就忘記它的存在。</p>
+  </section>
+
+</main>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>兩分鐘，幫你的 AI 請一個顧問</h2>
+  <p>更新版本 → <code>/advisor fable</code> → 看到 Advisor set to，就這樣</p>
+  <div>
+    <a class="cta-btn" href="https://808aiworkshop.com/808aiclaudecodesetup">
+      ⌨️ Claude Code 完整教學
+    </a>
+    <a class="cta-btn-outline" href="https://808aiworkshop.com/808aiclaudefeatures">
+      ✨ Claude 功能總覽
+    </a>
+    <a class="cta-btn-outline" href="https://808aiworkshop.com/808aiworkflow">
+      🔄 808AI 工作流程
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-brand">🔧 808 AI 五金行</div>
+  <p>賣的不是焦慮，是「親自驗證過的 AI 工具與方法」</p>
+  <p style="margin-top: 6px;">All Rights Reserved © 2026</p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
