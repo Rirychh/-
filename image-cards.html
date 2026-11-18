@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圖卡量產工作流 — 我出需求、Claude 寫指令、ChatGPT 只畫｜808 AI 五金行</title>
+<meta name="description" content="三個角色分工的圖卡生成工作流：人只講需求，Claude 負責寫畫圖指令與審圖，ChatGPT 只負責畫。含完整畫圖指令模板、角色設定卡、五條審核標準與重試上限。808AI 五金行自用流程。">
+
+<link rel="canonical" href="https://808aiworkshop.com/808aiimagecards">
+<meta property="og:title" content="圖卡量產工作流 — 我出需求、Claude 寫指令、ChatGPT 只畫｜808 AI 五金行">
+<meta property="og:description" content="人不抽卡，只看最後結果。三角分工 + 五條審核標準 + 重試上限，把圖卡產出變成可重複的流程。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://808aiworkshop.com/808aiimagecards">
+<meta property="og:site_name" content="808 AI 五金行">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  background: #FAF5F0;
+  color: #2D2A26;
+  line-height: 1.75;
+  font-size: 16px;
+}
+
+:root {
+  --primary: #E8751A;
+  --primary-light: #FDF0E6;
+  --primary-border: #F5C89A;
+  --accent: #0F766E;
+  --accent-light: #E6F4F1;
+  --accent-border: #99D5CE;
+  --bg: #FAF5F0;
+  --card: #FFFFFF;
+  --text: #2D2A26;
+  --text-2: #6B6560;
+  --text-3: #9B9590;
+  --border: #E8E0D8;
+  --max-w: 880px;
+}
+
+h1, h2, h3 { font-family: 'Noto Serif TC', serif; line-height: 1.3; }
+a { color: var(--accent); text-decoration: none; transition: all 0.2s; }
+a:hover { text-decoration: underline; }
+code { font-family: 'JetBrains Mono', monospace; background: #F5EDE5; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 72px 24px 56px;
+  position: relative;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 3px; background: var(--accent); border-radius: 2px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  font-size: 13px; font-weight: 600; padding: 6px 18px;
+  border-radius: 100px; letter-spacing: 0.5px; margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  font-weight: 700; margin-bottom: 16px;
+}
+.hero h1 .accent { color: var(--accent); }
+.hero .subtitle {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  color: var(--text-2); max-width: 580px; margin: 0 auto;
+}
+
+/* Section */
+.section { padding: 56px 0; }
+.section-border { border-top: 1px solid var(--border); }
+.section-title { font-size: 1.4rem; margin-bottom: 8px; }
+.section-subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 32px; }
+.section-body p { color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body strong { color: var(--text); }
+.section-body ul, .section-body ol { padding-left: 22px; color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.section-body li { margin-bottom: 6px; }
+
+/* Feature Grid */
+.feature-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+}
+@media (max-width: 680px) { .feature-grid { grid-template-columns: 1fr; } }
+.feature-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 28px 24px; transition: all 0.3s;
+}
+.feature-card:hover {
+  border-color: var(--accent-border); transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+.feature-icon { font-size: 28px; margin-bottom: 12px; }
+.feature-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.feature-card p { font-size: 14px; color: var(--text-2); }
+
+/* Role Grid (3-up) */
+.role-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+@media (max-width: 760px) { .role-grid { grid-template-columns: 1fr; } }
+.role-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 24px 20px; transition: all 0.3s;
+}
+.role-card:hover {
+  border-color: var(--accent-border); transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+.role-icon { font-size: 26px; margin-bottom: 10px; }
+.role-card h3 { font-size: 1rem; margin-bottom: 4px; }
+.role-tag {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.5px; color: var(--accent); background: var(--accent-light);
+  border-radius: 999px; padding: 2px 10px; margin-bottom: 10px;
+}
+.role-card ul { padding-left: 18px; margin: 0; }
+.role-card li { font-size: 13.5px; color: var(--text-2); margin-bottom: 4px; }
+
+/* Highlight Box */
+.highlight {
+  background: var(--accent-light); border: 1.5px solid var(--accent-border);
+  border-radius: 14px; padding: 24px 28px; margin: 28px 0;
+}
+.highlight h3 { color: var(--accent); font-size: 1.05rem; margin-bottom: 10px; }
+.highlight p { font-size: 14px; color: var(--text-2); }
+.highlight strong { color: var(--text); }
+
+/* TOC */
+.toc {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px 26px; margin: 32px 0;
+}
+.toc-title { font-size: 13px; color: var(--text-3); font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+.toc ol { padding-left: 20px; margin: 0; color: var(--text-2); }
+.toc li { font-size: 14px; margin-bottom: 6px; }
+.toc a { color: var(--text); }
+.toc a:hover { color: var(--accent); }
+
+/* Install Box */
+.install-box {
+  background: #1e1e2e; border-radius: 12px; padding: 22px 26px;
+  margin: 20px 0; position: relative;
+}
+.install-box code {
+  font-family: 'JetBrains Mono', monospace; color: #a6e3a1;
+  font-size: 13.5px; background: none; padding: 0;
+  display: block; white-space: pre-wrap; word-break: break-word;
+}
+.install-label {
+  font-size: 12px; color: #6c7086; margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Steps */
+.steps { counter-reset: step; margin: 24px 0; }
+.step {
+  counter-increment: step;
+  padding: 20px 20px 20px 64px; position: relative;
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 12px; margin-bottom: 14px;
+}
+.step::before {
+  content: counter(step);
+  position: absolute; left: 20px; top: 20px;
+  width: 32px; height: 32px; background: var(--accent-light);
+  color: var(--accent); font-weight: 800; font-size: 15px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; font-family: 'Noto Sans TC', sans-serif; }
+.step p { font-size: 14px; color: var(--text-2); margin-bottom: 6px; }
+.step code { font-size: 13px; }
+
+/* Tip */
+.tip { background: var(--primary-light); border: 1px solid var(--primary-border); border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+.tip-title { font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.tip p { color: var(--text-2); font-size: 14px; }
+.tip strong { color: var(--text); }
+
+/* Warn */
+.warn { background: #FFF5E0; border: 1px solid #F5D89A; border-radius: 12px; padding: 18px 22px; margin: 20px 0; }
+.warn-title { font-weight: 700; color: #B45309; font-size: 14px; margin-bottom: 6px; }
+.warn p { color: var(--text-2); font-size: 14px; }
+
+/* Compare Table */
+.compare-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--card); border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--border);
+  margin: 18px 0;
+}
+.compare-table th, .compare-table td {
+  padding: 12px 16px; text-align: left; font-size: 13.5px;
+  border-bottom: 1px solid var(--border);
+}
+.compare-table thead th {
+  background: #F5EDE5; font-weight: 700; font-size: 13px;
+}
+.compare-table thead th:nth-child(2) { color: #0F766E; }
+.compare-table thead th:nth-child(3) { color: #C2410C; }
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; white-space: nowrap; }
+@media (max-width: 520px) {
+  .compare-table th, .compare-table td { padding: 10px 12px; font-size: 13px; }
+}
+
+/* CTA */
+.cta-section { padding: 56px 24px; text-align: center; border-top: 1px solid var(--border); }
+.cta-section h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.cta-section p { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: var(--accent); color: #fff; margin: 6px;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,118,110,0.25); color: #fff; text-decoration: none; }
+.cta-btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px; border-radius: 12px; font-size: 15px;
+  font-weight: 700; transition: all 0.25s; text-decoration: none;
+  background: transparent; color: var(--accent); border: 2px solid var(--accent-border); margin: 6px;
+}
+.cta-btn-outline:hover { background: var(--accent-light); transform: translateY(-2px); text-decoration: none; }
+
+/* Footer */
+.footer { border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; }
+.footer-brand { font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.footer p { font-size: 13px; color: var(--text-3); }
+
+/* Animations */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Nav */
+.nav-808ai {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(10, 22, 40, 0.96);
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  backdrop-filter: blur(10px);
+  overflow-x: auto;
+}
+.nav-808ai::-webkit-scrollbar { height: 0; }
+.nav-808ai a { color: rgba(255,255,255,0.82); text-decoration: none; white-space: nowrap; }
+.nav-808ai a:hover { color: #fff; }
+.nav-808ai-brand { font-weight: 800; color: #fff !important; flex-shrink: 0; }
+.nav-808ai-sep, .nav-808ai-dot { color: rgba(255,255,255,0.32); flex-shrink: 0; }
+.nav-808ai-items { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.nav-808ai-link { padding: 6px 8px; border-radius: 999px; }
+.nav-808ai-link.nav-808ai-active { color: #0a1628 !important; background: #e8d49e; font-weight: 700; }
+@media (max-width: 768px) {
+  .nav-808ai { align-items: flex-start; gap: 8px; padding: 10px 12px; }
+  .nav-808ai-items { gap: 6px; font-size: 13px; }
+  .nav-808ai-link { padding: 5px 7px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav-808ai" aria-label="808AI site navigation">
+  <a href="https://808aiworkshop.com/" class="nav-808ai-brand">🔧 808AI 五金行</a>
+  <span class="nav-808ai-sep">|</span>
+  <div class="nav-808ai-items">
+    <a href="https://808aiworkshop.com/" class="nav-808ai-link">首頁</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/openclawvsclaude" class="nav-808ai-link">工具比較</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiopenclawsetup" class="nav-808ai-link">OpenClaw 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aisecuritychecklist" class="nav-808ai-link">安全檢查</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudesetup" class="nav-808ai-link">Claude 指南</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudecodesetup" class="nav-808ai-link">Claude Code</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiworkflow" class="nav-808ai-link">工作流程</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiclaudefeatures" class="nav-808ai-link">Claude 功能</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiccunpacked" class="nav-808ai-link">深度拆解</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aichatgptimageprompts" class="nav-808ai-link">ChatGPT 圖像提示</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/808aiimagecards" class="nav-808ai-link nav-808ai-active">圖卡工作流</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/hermes-agent" class="nav-808ai-link">Hermes Agent</a><span class="nav-808ai-dot">·</span>
+    <a href="https://808aiworkshop.com/livestream" class="nav-808ai-link">直播記錄</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">🃏 808AI 自用工作流 · 三角分工 · 人不抽卡</div>
+  <h1>我不自己抽卡<br><span class="accent">只看最後的結果</span></h1>
+  <p class="subtitle">
+    一套圖卡生成工作流：人只負責講需求，Claude 寫畫圖指令並負責審圖，ChatGPT 只負責畫。<br>
+    含完整指令模板、角色設定卡、五條審核標準與重試上限。
+  </p>
+</header>
+
+<main class="container">
+
+  <!-- What is it -->
+  <section class="section">
+    <h2 class="section-title">這套流程解決什麼問題？</h2>
+    <p class="section-subtitle">一句話說完：把「抽卡」變成「交件」</p>
+    <p style="font-size:15px;color:var(--text-2);margin-bottom:20px;">
+      自己跟繪圖模型來回，大部分時間不是花在創意上，而是花在<strong>重複勞動</strong>：同一段指令改第七次、每張圖都要自己看有沒有簡體字、帽子又畫錯、文字又被角色擋住。本來是要產一張圖卡，最後變成一個下午。
+    </p>
+    <p style="font-size:15px;color:var(--text-2);margin-bottom:20px;">
+      解法不是換更好的模型，是<strong>把角色拆開</strong>。讓寫指令和審圖的那個人（Claude）跟畫圖的那個人（ChatGPT）分開，然後把審核標準寫死。人只出現在頭尾兩端：開頭講需求，結尾看成品。
+    </p>
+
+    <div class="highlight">
+      <h3>🔁 核心閉環</h3>
+      <p>
+        <strong>講需求 → 寫指令 → 畫 → 審 → 沒過就改指令重畫 → 過了才交到人手上</strong><br><br>
+        關鍵在「審」這一步必須是<strong>機械式的、有明文標準的</strong>，而不是憑感覺覺得好不好看。<br>
+        標準寫得夠死，退圖和重畫就不需要人介入。
+      </p>
+    </div>
+  </section>
+
+  <!-- Roles -->
+  <section class="section section-border">
+    <h2 class="section-title">三個角色，各做一件事</h2>
+    <p class="section-subtitle">職責不重疊——這是整套流程能自己跑的前提</p>
+
+    <div class="role-grid">
+      <div class="role-card fade-up">
+        <div class="role-icon">🙋</div>
+        <div class="role-tag">人</div>
+        <h3>只講需求</h3>
+        <ul>
+          <li>要什麼圖</li>
+          <li>用在哪個平台</li>
+          <li>給誰看</li>
+          <li>最後驗收成品</li>
+        </ul>
+      </div>
+      <div class="role-card fade-up">
+        <div class="role-icon">🧠</div>
+        <div class="role-tag">Claude</div>
+        <h3>寫指令 + 審圖</h3>
+        <ul>
+          <li>把需求寫成完整畫圖指令</li>
+          <li>照標準逐條檢查回來的圖</li>
+          <li>決定要不要重畫</li>
+          <li>重畫時負責改指令</li>
+        </ul>
+      </div>
+      <div class="role-card fade-up">
+        <div class="role-icon">🎨</div>
+        <div class="role-tag">ChatGPT</div>
+        <h3>只負責畫</h3>
+        <ul>
+          <li>收到指令就畫</li>
+          <li>不討論需求</li>
+          <li>不自己判斷要不要改</li>
+          <li>透過 Codex CLI 呼叫</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-title">💡 為什麼不讓畫圖的那端自己審？</div>
+      <p>畫的和審的是同一個，就會自己說自己畫得好。<strong>審核必須由沒有畫這張圖的那一方執行</strong>——這是分工的重點，不是多一道工。</p>
+    </div>
+  </section>
+
+  <!-- TOC -->
+  <div class="toc fade-up">
+    <div class="toc-title">📖 完整流程與標準</div>
+    <ol>
+      <li><a href="#flow">四步流程</a>（從需求到交件）</li>
+      <li><a href="#prompt">畫圖指令要寫滿四件事</a>（含可複製模板）</li>
+      <li><a href="#charsheet">角色設定卡</a>（長相寫死，不給自由發揮）</li>
+      <li><a href="#review">五條審核標準</a>（怎麼算過、怎麼算退）</li>
+      <li><a href="#retry">重試上限與換路規則</a></li>
+      <li><a href="#codex">怎麼接上 Codex CLI</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. Flow -->
+  <section class="section section-border section-body" id="flow">
+    <h2 class="section-title">1. 四步流程</h2>
+    <p class="section-subtitle">人只出現在第 1 步和最後驗收</p>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <h4>人跟 Claude Code 講需求</h4>
+        <p>三件事講清楚就夠：<strong>要什麼圖、用在哪、給誰看</strong>。不需要自己想構圖、不需要自己想比例、不需要先寫英文 prompt。</p>
+      </div>
+      <div class="step fade-up">
+        <h4>Claude 把需求寫成完整的畫圖指令</h4>
+        <p>補齊四件人沒講的事：<strong>比例、構圖、角色長相、圖上要放的字</strong>。這一步是整套流程的品質來源——指令寫得完整，退圖率就低。</p>
+      </div>
+      <div class="step fade-up">
+        <h4>Claude 用 Codex CLI 叫 ChatGPT 畫</h4>
+        <p>用 ChatGPT 帳號登入就能用，<strong>不用另外申請 API key</strong>（需付費方案，見 <a href="#codex">第 6 節</a>）。畫圖端不參與討論，收到指令就畫。</p>
+      </div>
+      <div class="step fade-up">
+        <h4>圖回來，Claude 照標準審</h4>
+        <p>五條標準逐條檢查。<strong>沒過就改指令重畫</strong>，不拿去問人、不降低標準放行。過了才交到人手上。</p>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <h3>🎯 人在這套流程裡的工作量</h3>
+      <p>
+        <strong>開頭一句需求，結尾看一張圖。</strong><br>
+        中間的指令撰寫、呼叫、檢查、退圖、重寫、再呼叫，全部不經過人。
+      </p>
+    </div>
+  </section>
+
+  <!-- 2. Prompt -->
+  <section class="section section-border section-body" id="prompt">
+    <h2 class="section-title">2. 畫圖指令要寫滿四件事</h2>
+    <p class="section-subtitle">比例、構圖、角色長相、圖上要放的字</p>
+
+    <p>人講的需求通常是「幫我做一張介紹咪卡的 IG 圖卡」。這句話缺的東西比有的多。Claude 要補的就是這四項：</p>
+
+    <ul>
+      <li><strong>比例</strong>——決定於要發的平台，不是決定於好不好看</li>
+      <li><strong>構圖</strong>——角色放哪、佔多大、哪裡留白給文字</li>
+      <li><strong>角色長相</strong>——逐條寫死，含「不是什麼」</li>
+      <li><strong>圖上要放的字</strong>——只放這幾個字，一字不多</li>
+    </ul>
+
+    <p>寫成可以直接貼給畫圖端的模板長這樣：</p>
+
+    <div class="install-box">
+      <div class="install-label"># 畫圖指令模板（直接貼給畫圖端）</div>
+      <code>【比例】
+直式 4:5（1080 × 1350 px）
+
+【用途】
+IG 貼文第 1 張，給還沒用過 AI 的人看
+
+【角色設定卡 — 逐條照畫，不要自由發揮】
+咪卡：黑貓、金黃色眼睛、米褐色偵探帽
+（偵探帽 = 鹿皮獵帽 deerstalker，不是棒球帽、不是紳士帽）
+
+【構圖】
+角色放右下角，佔畫面約 1/4
+左上方留白給主標題
+角色不可壓到任何文字，也不可搶走主視覺
+
+【圖上文字 — 只放這幾個字，全部繁體中文】
+主標：（填入）
+副標：（填入）
+
+【禁止】
+不要九宮格、不要多格分鏡、不要拼圖——一張圖就是一張卡
+不要簡體字、不要用英文代替中文
+不要加沒有要求的文字、logo、浮水印</code>
+    </div>
+
+    <div class="tip">
+      <div class="tip-title">💡 「禁止」這段不要省</div>
+      <p>繪圖模型最常出的錯都是<strong>沒被禁止的自由發揮</strong>：自己拼成九宮格、自己加英文標語、自己換一頂好看的帽子。把禁止寫在指令裡，比事後退圖便宜。</p>
+    </div>
+  </section>
+
+  <!-- 3. Character sheet -->
+  <section class="section section-border section-body" id="charsheet">
+    <h2 class="section-title">3. 角色設定卡</h2>
+    <p class="section-subtitle">長相寫死一次，之後每張圖原封不動貼進去</p>
+
+    <p>角色跨圖不一致，是圖卡系列最明顯的破功點。解法是把長相固定成一張設定卡，<strong>每一張圖的指令都原封不動貼同一段文字</strong>，不要每次重寫、不要改用詞。</p>
+
+    <div class="highlight">
+      <h3>🐈‍⬛ 範例：咪卡</h3>
+      <p>
+        <strong>黑貓 · 金黃色眼睛 · 米褐色偵探帽</strong><br><br>
+        三項全部要對上才算過。帽子畫成棒球帽就退——這不是「風格差異」，是角色錯了。
+      </p>
+    </div>
+
+    <p>設定卡寫法上有兩個細節值得做：</p>
+    <ul>
+      <li><strong>每一項都附「不是什麼」</strong>：「米褐色偵探帽（鹿皮獵帽，不是棒球帽）」比單寫「偵探帽」有效得多</li>
+      <li><strong>項目不要超過五項</strong>：寫太多，模型會開始取捨，反而丟掉關鍵特徵</li>
+    </ul>
+  </section>
+
+  <!-- 4. Review -->
+  <section class="section section-border section-body" id="review">
+    <h2 class="section-title">4. 五條審核標準</h2>
+    <p class="section-subtitle">圖卡用這五條——逐條過，不是整體感覺</p>
+
+    <table class="compare-table fade-up">
+      <thead>
+        <tr>
+          <th></th>
+          <th>✓ 怎麼算過</th>
+          <th>✕ 怎麼算退</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>角色</td>
+          <td>長相跟設定卡逐條對上</td>
+          <td>黑貓變虎斑、偵探帽畫成棒球帽</td>
+        </tr>
+        <tr>
+          <td>文字</td>
+          <td>繁體中文看得懂，無亂碼</td>
+          <td>筆畫糊掉、錯字、出現簡體字</td>
+        </tr>
+        <tr>
+          <td>比例</td>
+          <td>直式 4:5 或橫式 16:9</td>
+          <td>比例不符平台、主體被裁掉</td>
+        </tr>
+        <tr>
+          <td>單張</td>
+          <td>一張圖就是一張卡</td>
+          <td>拼成九宮格、多格分鏡</td>
+        </tr>
+        <tr>
+          <td>構圖</td>
+          <td>角色不擋字，也不搶主視覺</td>
+          <td>角色壓在標題上、文字被遮住</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 五條是「全部要過」，不是「過三條就算好」</div>
+      <p>任何一條沒過就是退。只要開始通融，標準就會一路鬆到跟沒有標準一樣——而且是人要花時間重新看每一張。</p>
+    </div>
+
+    <p>這五條是圖卡用的。如果是別的用途（例如橫幅、封面、產品圖），標準要換，但<strong>原則一樣：明文、可逐條判斷、不靠感覺</strong>。</p>
+  </section>
+
+  <!-- 5. Retry -->
+  <section class="section section-border section-body" id="retry">
+    <h2 class="section-title">5. 重試上限與換路規則</h2>
+    <p class="section-subtitle">同一張圖、同一種改法，失敗兩次就換路</p>
+
+    <p>沒有上限的重試會變成無聲的燒時間：同一個問題改第九次，每次都差一點。所以規則寫死：</p>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <h4>同一種改法，最多試兩次</h4>
+        <p>第二次還是沒過，就<strong>不要再用同一種方式改指令</strong>。問題大概不在措辭，在要求本身太難。</p>
+      </div>
+      <div class="step fade-up">
+        <h4>換路一：縮短圖上的字</h4>
+        <p>文字類失敗（亂碼、糊掉、簡體）絕大多數是<strong>字太多</strong>。砍到剩主標，通常就過了。</p>
+      </div>
+      <div class="step fade-up">
+        <h4>換路二：把畫面改簡單</h4>
+        <p>構圖類失敗（擋字、搶主視覺）靠<strong>減少元素</strong>解決：少一個物件、背景再空一點、角色再小一點。</p>
+      </div>
+      <div class="step fade-up">
+        <h4>兩條換路都走完，才叫人來看</h4>
+        <p>這時候回報的不是「畫不出來」，而是<strong>試過哪幾種、各差在哪</strong>——人要決定的是放寬哪一條標準，或者改需求。</p>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-title">💡 上限的真正作用</div>
+      <p>不是省 token，是<strong>保護人的注意力</strong>。沒有上限，壞掉的任務會一直卡在那裡，不會冒泡到人面前。</p>
+    </div>
+  </section>
+
+  <!-- 6. Codex -->
+  <section class="section section-border section-body" id="codex">
+    <h2 class="section-title">6. 怎麼接上 Codex CLI</h2>
+    <p class="section-subtitle">用 ChatGPT 帳號登入就能用，不用另外申請 API</p>
+
+    <p>這套流程裡 Claude 要能自己把指令送到畫圖端。808AI 走的路是 OpenAI 的 <strong>Codex CLI</strong>：<strong>用你現有的 ChatGPT 帳號登入即可</strong>，不需要另外去申請、綁定 API key。</p>
+
+    <div class="install-box">
+      <div class="install-label"># 安裝（擇一）</div>
+      <code>npm install -g @openai/codex
+
+# 或者 macOS / Linux 一行安裝
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+
+# 或者 Homebrew（注意是 --cask）
+brew install --cask codex</code>
+    </div>
+
+    <div class="install-box">
+      <div class="install-label"># 登入：跑起來之後選「Sign in with ChatGPT」</div>
+      <code>codex</code>
+    </div>
+
+    <p>官方文件的登入方式是<strong>直接執行 <code>codex</code>，在選單裡選「Sign in with ChatGPT」</strong>，會跳瀏覽器完成授權——不是打 <code>codex login</code>。登入後 Claude Code 就可以在終端機裡呼叫 <code>codex</code>，把寫好的整段指令送過去。</p>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 需要付費的 ChatGPT 方案</div>
+      <p>官方說明是「建議登入 ChatGPT 帳號，以 <strong>Plus、Pro、Business、Edu 或 Enterprise</strong> 方案使用 Codex」。免費帳號能不能用，官方頁面沒有明講——這部分請以你自己的帳號實測為準。</p>
+    </div>
+
+    <div class="warn">
+      <div class="warn-title">⚠️ 老實說：Codex CLI 官方定位是「寫程式的 agent」</div>
+      <p>OpenAI 官方 README 把 Codex CLI 描述為<strong>在你電腦上本機執行的 coding agent</strong>，<strong>文件裡並沒有記載產圖功能</strong>。這條「用 Codex CLI 叫 ChatGPT 畫圖」是 808AI 自己接出來的路徑，不是官方寫在文件上的用法；而且 Codex CLI 更新很快，實際怎麼叫得動圖像生成會隨版本變動。裝好後請先跑 <code>codex --help</code> 對一次你這版的能力，不要照抄任何舊版旗標。</p>
+    </div>
+
+    <div class="tip">
+      <div class="tip-title">💡 沒有 Codex CLI 也能跑這套流程</div>
+      <p>自動化只是省掉複製貼上。<strong>真正產生品質的是指令模板、設定卡和五條標準</strong>——手動把指令貼到 ChatGPT、把圖貼回 Claude 來審，流程一樣成立，只是慢一點。對不確定 Codex 這條路的人，建議先用手動跑通，確認標準有效，再去自動化。</p>
+    </div>
+
+  </section>
+
+  <!-- Summary -->
+  <section class="section section-border section-body">
+    <h2 class="section-title">整套流程能自己跑的三個前提</h2>
+    <p class="section-subtitle">少任何一個，人就會被拉回中間</p>
+
+    <div class="feature-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">📋</div>
+        <h3>標準是明文的</h3>
+        <p>五條標準寫在紙上，每條都能單獨判斷「過 / 退」。靠感覺的標準沒辦法交給別人執行。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🚧</div>
+        <h3>審的人不是畫的人</h3>
+        <p>畫圖端不參與判斷要不要重畫。自己審自己，標準一定會鬆。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">⏱️</div>
+        <h3>失敗有上限</h3>
+        <p>兩次換路、換完才找人。沒有上限的重試等於把問題藏起來。</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🎴</div>
+        <h3>角色長相固定一次</h3>
+        <p>設定卡原封不動貼進每張指令。每次重寫長相，就等於每次重新抽卡。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>想把自己的流程也拆成這樣？</h2>
+  <p>三個方向，任你挑</p>
+  <div>
+    <a class="cta-btn" href="https://808aiworkshop.com/808aichatgptimageprompts">
+      🎨 ChatGPT 圖像提示教學
+    </a>
+    <a class="cta-btn-outline" href="https://808aiworkshop.com/808aiclaudecodesetup">
+      ⌨️ Claude Code 教學
+    </a>
+    <a class="cta-btn-outline" href="https://808aiworkshop.com/808aiworkflow">
+      🔄 更多工作流程
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-brand">🔧 808 AI 五金行</div>
+  <p>賣的不是焦慮，是「親自驗證過的 AI 工具與方法」</p>
+  <p style="margin-top: 6px;">All Rights Reserved © 2026</p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+[
+  {"query": "下週要交一份給客戶看的季度分析報告，資料在我 Google Sheet 的『Q3 原始數據』那個分頁，你自己判斷做到可以直接寄出去的程度，我只看最後結果", "should_trigger": true},
+  {"query": "這個匯出 CSV 的功能我已經改第三次了，每次給 PM 看都說哪裡不對，可以幫我一次弄到好嗎，不要再來回了", "should_trigger": true},
+  {"query": "我們每個月都要出一份社群成效整理，每次都重頭來一遍很煩，幫我把它變成固定的流程", "should_trigger": true},
+  {"query": "幫我重寫 onboarding 頁面的文案，要給完全沒用過我們產品的人看。寫完你先自己檢查過再給我，不要丟半成品", "should_trigger": true},
+  {"query": "老闆要我做一個新的定價頁，但我不確定什麼叫做好。你先幫我訂一下什麼算完成，再開始動手", "should_trigger": true},
+  {"query": "這個 API 的錯誤處理整個很亂，幫我整理一遍。但不要改到回傳格式，前端那邊在用。改完要確定沒壞掉", "should_trigger": true},
+  {"query": "幫我把這份 40 頁的研究報告濃縮成 2 頁摘要給董事會看，寫完自己審一下有沒有漏掉重點", "should_trigger": true},
+  {"query": "我想要一套每次發新版都能跑的檢查清單，現在都靠記憶，上次漏掉改版號被罵", "should_trigger": true},
+  {"query": "這份 proposal 我改到第五版還是被退。幫我看看是不是我根本沒搞清楚他們要什麼，然後重寫一版", "should_trigger": true},
+  {"query": "幫我把這批產品照片處理成蝦皮上架規格，資料夾裡有 60 張，做完要確保每張都合格", "should_trigger": true},
+
+  {"query": "Python 的 list comprehension 跟 generator expression 差在哪？什麼時候該用哪個", "should_trigger": false},
+  {"query": "我們公司 Slack 的 workflow builder 要怎麼設定成有人在 #support 發訊息就自動回覆？", "should_trigger": false},
+  {"query": "幫我看一下這行 SQL 為什麼噴 syntax error：SELECT * FROM users WHERE created_at > '2026-01-01", "should_trigger": false},
+  {"query": "這個 bug 我們一起慢慢看，你先跑一下 npm test 給我看結果，我想先確認是不是我環境的問題", "should_trigger": false},
+  {"query": "808aiworkshop.com 的 nav 裡「工作流程」那個連結現在指到哪一頁？", "should_trigger": false},
+  {"query": "幫我查一下 OpenAI 最新的 embedding model 一百萬 token 要多少錢", "should_trigger": false},
+  {"query": "幫我把這句翻成英文：「賣的不是焦慮，是親自驗證過的 AI 工具與方法」", "should_trigger": false},
+  {"query": "我想了解一下 PDCA 循環跟 OKR 到底差在哪，之前主管兩個混著講我有點亂", "should_trigger": false},
+  {"query": "剛剛那個 commit 的 message 幫我改一下錯字，「檢察」要改成「檢查」", "should_trigger": false},
+  {"query": "我們團隊的 code review 流程文件在 Notion 的哪一頁？我找不到", "should_trigger": false}
+]
